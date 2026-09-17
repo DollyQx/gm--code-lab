@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\LeadStatus;
+use App\Enums\ProjectStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -33,6 +35,25 @@ class DashboardController extends Controller
             'negotiation_leads' => Lead::where('status', LeadStatus::NEGOTIATION->value)->count(),
             'won_leads' => Lead::where('status', LeadStatus::WON->value)->count(),
             'lost_leads' => Lead::where('status', LeadStatus::LOST->value)->count(),
+            
+            // Project Metrics (Phase 5B)
+            'total_projects' => Project::count(),
+            'active_projects' => Project::whereIn('status', [
+                ProjectStatus::PLANNING->value,
+                ProjectStatus::APPROVED->value,
+                ProjectStatus::IN_PROGRESS->value,
+                ProjectStatus::TESTING->value,
+                ProjectStatus::CLIENT_REVIEW->value,
+                ProjectStatus::DEPLOYMENT->value,
+            ])->count(),
+            'completed_projects' => Project::where('status', ProjectStatus::COMPLETED->value)->count(),
+            'overdue_projects' => Project::whereNotIn('status', [
+                ProjectStatus::COMPLETED->value,
+                ProjectStatus::CANCELLED->value,
+            ])
+            ->whereNotNull('expected_completion_date')
+            ->where('expected_completion_date', '<', now()->toDateString())
+            ->count(),
         ];
 
         $recentLeads = Lead::with('assignedUser')
@@ -46,6 +67,11 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view('admin.dashboard', compact('adminUser', 'stats', 'recentLeads', 'recentClients'));
+        $recentProjects = Project::with('client')
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get();
+
+        return view('admin.dashboard', compact('adminUser', 'stats', 'recentLeads', 'recentClients', 'recentProjects'));
     }
 }

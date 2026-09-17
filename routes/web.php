@@ -3,6 +3,10 @@
 use App\Http\Controllers\Admin\ClientController as AdminClientController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\LeadController as AdminLeadController;
+use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
+use App\Http\Controllers\Admin\ProjectRequirementController as AdminProjectRequirementController;
+use App\Http\Controllers\Admin\ProjectMilestoneController as AdminProjectMilestoneController;
+use App\Http\Controllers\Admin\ProjectTaskController as AdminProjectTaskController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\ClientLoginController;
 use App\Http\Controllers\Auth\ClientRegisterController;
@@ -96,4 +100,29 @@ Route::middleware(['auth', 'active', 'role:admin,super_admin'])->prefix('admin')
     Route::get('/leads/{lead}/edit', [AdminLeadController::class, 'edit'])->name('leads.edit');
     Route::put('/leads/{lead}', [AdminLeadController::class, 'update'])->name('leads.update');
     Route::patch('/leads/{lead}/status', [AdminLeadController::class, 'updateStatus'])->name('leads.status');
+
+    // Project Management
+    Route::get('/projects', [AdminProjectController::class, 'index'])->name('projects.index');
+    Route::get('/projects/create', [AdminProjectController::class, 'create'])->name('projects.create');
+    Route::post('/projects', [AdminProjectController::class, 'store'])->name('projects.store');
+    Route::get('/projects/{project}', [AdminProjectController::class, 'show'])->name('projects.show');
+    Route::get('/projects/{project}/edit', [AdminProjectController::class, 'edit'])->name('projects.edit');
+    Route::put('/projects/{project}', [AdminProjectController::class, 'update'])->name('projects.update');
+    Route::patch('/projects/{project}/status', [AdminProjectController::class, 'updateStatus'])->name('projects.status');
+
+    // Requirements
+    Route::post('/projects/{project}/requirements', [AdminProjectRequirementController::class, 'store'])->name('projects.requirements.store');
+    Route::put('/projects/{project}/requirements/{requirement}', [AdminProjectRequirementController::class, 'update'])->name('projects.requirements.update');
+    Route::patch('/projects/{project}/requirements/{requirement}/status', [AdminProjectRequirementController::class, 'updateStatus'])->name('projects.requirements.status');
+
+    // Milestones
+    Route::post('/projects/{project}/milestones', [AdminProjectMilestoneController::class, 'store'])->name('projects.milestones.store');
+    Route::put('/projects/{project}/milestones/{milestone}', [AdminProjectMilestoneController::class, 'update'])->name('projects.milestones.update');
+    Route::patch('/projects/{project}/milestones/{milestone}/status', [AdminProjectMilestoneController::class, 'updateStatus'])->name('projects.milestones.status');
+
+    // Tasks
+    Route::post('/projects/{project}/tasks', [AdminProjectTaskController::class, 'store'])->name('projects.tasks.store');
+    Route::put('/projects/{project}/tasks/{task}', [AdminProjectTaskController::class, 'update'])->name('projects.tasks.update');
+    Route::patch('/projects/{project}/tasks/{task}/status', [AdminProjectTaskController::class, 'updateStatus'])->name('projects.tasks.status');
 });
+
