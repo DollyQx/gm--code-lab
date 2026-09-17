@@ -27,6 +27,8 @@ use App\Http\Controllers\Client\QuotationController as ClientQuotationController
 use App\Http\Controllers\Client\RazorpayPaymentController as ClientRazorpayPaymentController;
 use App\Http\Controllers\Client\SupportTicketController as ClientSupportTicketController;
 use App\Http\Controllers\Admin\AdminSupportTicketController;
+use App\Http\Controllers\Client\ChangeRequestController as ClientChangeRequestController;
+use App\Http\Controllers\Admin\AdminChangeRequestController;
 use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
@@ -123,6 +125,13 @@ Route::middleware(['auth', 'active', 'role:client'])->group(function () {
     Route::post('/client/tickets', [ClientSupportTicketController::class, 'store'])->name('client.tickets.store');
     Route::get('/client/tickets/{ticket}', [ClientSupportTicketController::class, 'show'])->name('client.tickets.show');
     Route::post('/client/tickets/{ticket}/reply', [ClientSupportTicketController::class, 'reply'])->name('client.tickets.reply');
+
+    // Client Change Requests (Phase 7C.2)
+    Route::get('/client/change-requests', [ClientChangeRequestController::class, 'index'])->name('client.change-requests.index');
+    Route::get('/client/change-requests/create', [ClientChangeRequestController::class, 'create'])->name('client.change-requests.create');
+    Route::post('/client/change-requests', [ClientChangeRequestController::class, 'store'])->name('client.change-requests.store');
+    Route::get('/client/change-requests/{changeRequest}', [ClientChangeRequestController::class, 'show'])->name('client.change-requests.show');
+    Route::post('/client/change-requests/{changeRequest}/cancel', [ClientChangeRequestController::class, 'cancel'])->name('client.change-requests.cancel');
 });
 
 // Protected Admin CRM Routes
@@ -202,6 +211,13 @@ Route::middleware(['auth', 'active', 'role:admin,super_admin,support,project_man
     Route::post('/tickets/{ticket}/internal-note', [AdminSupportTicketController::class, 'internalNote'])->name('tickets.internal-note');
     Route::patch('/tickets/{ticket}/status', [AdminSupportTicketController::class, 'updateStatus'])->name('tickets.status');
     Route::patch('/tickets/{ticket}/assign', [AdminSupportTicketController::class, 'assign'])->name('tickets.assign');
+
+    // Admin Change Request Management (Phase 7C.2)
+    Route::get('/change-requests', [AdminChangeRequestController::class, 'index'])->name('change-requests.index');
+    Route::get('/change-requests/{changeRequest}', [AdminChangeRequestController::class, 'show'])->name('change-requests.show');
+    Route::put('/change-requests/{changeRequest}/review', [AdminChangeRequestController::class, 'updateReview'])->name('change-requests.review');
+    Route::patch('/change-requests/{changeRequest}/approve', [AdminChangeRequestController::class, 'approve'])->name('change-requests.approve');
+    Route::patch('/change-requests/{changeRequest}/reject', [AdminChangeRequestController::class, 'reject'])->name('change-requests.reject');
 });
 
 // Public Webhooks (Phase 6C)

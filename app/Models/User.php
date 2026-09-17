@@ -137,6 +137,22 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Change requests submitted by client.
+     */
+    public function changeRequests(): HasMany
+    {
+        return $this->hasMany(ChangeRequest::class, 'client_id');
+    }
+
+    /**
+     * Change requests reviewed by staff member.
+     */
+    public function reviewedChangeRequests(): HasMany
+    {
+        return $this->hasMany(ChangeRequest::class, 'reviewed_by_id');
+    }
+
+    /**
      * Check if user has administrative privileges (admin or super_admin).
      */
     public function isAdmin(): bool
