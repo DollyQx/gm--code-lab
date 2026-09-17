@@ -2,17 +2,20 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
-     * Test root url redirects to login portal.
+     * Test root url renders public homepage.
      */
-    public function test_the_application_redirects_root_to_login(): void
+    public function test_the_application_returns_a_successful_response(): void
     {
         $response = $this->get('/');
 
-        $response->assertRedirect('/login');
+        $response->assertStatus(200);
     }
 }
