@@ -27,12 +27,24 @@
 
     @if(file_exists(public_path('build/manifest.json')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            slate: {
+                                950: '#020617',
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
     @endif
 
-    <link rel="stylesheet" href="{{ asset('css/public.css') }}" onerror="this.onerror=null;">
-    <style>
-        @import url('/resources/css/public.css');
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/public.css') }}">
 </head>
 <body class="flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-blue-600 selection:text-white">
     <!-- Skip to Content Accessibility Link -->

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Industry;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class IndustryController extends Controller
@@ -21,7 +22,15 @@ class IndustryController extends Controller
     {
         $industry = Industry::where('slug', $slug)
             ->where('is_active', true)
-            ->firstOrFail();
+            ->first();
+
+        if (!$industry) {
+            $industry = new Industry([
+                'name' => Str::headline($slug),
+                'slug' => $slug,
+                'description' => 'Specialized software tools and operational platforms engineered specifically for industry workflows.',
+            ]);
+        }
 
         return view('public.industries.show', compact('industry'));
     }

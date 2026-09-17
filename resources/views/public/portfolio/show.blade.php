@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'Case Study: ' . ucfirst(str_replace('-', ' ', $slug)) . ' — GM Code Lab')
+@section('title', 'Case Study: ' . \Illuminate\Support\Str::headline($slug) . ' — GM Code Lab')
 @section('meta_description', 'Detailed software development case study by GM Code Lab.')
 
 @section('content')
@@ -10,7 +10,7 @@
                 &larr; Back to Portfolio
             </a>
             <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6">
-                Case Study: {{ ucfirst(str_replace('-', ' ', $slug)) }}
+                Case Study: {{ \Illuminate\Support\Str::headline($slug) }}
             </h1>
             <p class="text-xl text-slate-300 leading-relaxed">
                 An end-to-end software delivery case study highlighting technical challenges, architectural solutions, and operational outcomes.
