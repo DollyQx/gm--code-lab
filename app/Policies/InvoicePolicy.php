@@ -12,7 +12,7 @@ class InvoicePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() || ($user->isClient() && $user->isActive());
     }
 
     /**
@@ -20,7 +20,15 @@ class InvoicePolicy
      */
     public function view(User $user, Invoice $invoice): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() || ($user->isClient() && $user->isActive() && (int) $user->id === (int) $invoice->client_id);
+    }
+
+    /**
+     * Determine whether the client user can pay the invoice.
+     */
+    public function pay(User $user, Invoice $invoice): bool
+    {
+        return $user->isClient() && $user->isActive() && (int) $user->id === (int) $invoice->client_id;
     }
 
     /**

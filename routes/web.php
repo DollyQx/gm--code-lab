@@ -19,8 +19,12 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
+use App\Http\Controllers\Client\InvoiceController as ClientInvoiceController;
+use App\Http\Controllers\Client\PaymentController as ClientPaymentController;
 use App\Http\Controllers\Client\ProfileController;
 use App\Http\Controllers\Client\ProjectController as ClientProjectController;
+use App\Http\Controllers\Client\QuotationController as ClientQuotationController;
+use App\Http\Controllers\Client\RazorpayPaymentController as ClientRazorpayPaymentController;
 use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
@@ -91,6 +95,25 @@ Route::middleware(['auth', 'active', 'role:client'])->group(function () {
     // Client Projects
     Route::get('/client/projects', [ClientProjectController::class, 'index'])->name('client.projects.index');
     Route::get('/client/projects/{project}', [ClientProjectController::class, 'show'])->name('client.projects.show');
+
+    // Client Quotations
+    Route::get('/client/quotations', [ClientQuotationController::class, 'index'])->name('client.quotations.index');
+    Route::get('/client/quotations/{quotation}', [ClientQuotationController::class, 'show'])->name('client.quotations.show');
+    Route::post('/client/quotations/{quotation}/accept', [ClientQuotationController::class, 'accept'])->name('client.quotations.accept');
+    Route::post('/client/quotations/{quotation}/reject', [ClientQuotationController::class, 'reject'])->name('client.quotations.reject');
+
+    // Client Invoices
+    Route::get('/client/invoices', [ClientInvoiceController::class, 'index'])->name('client.invoices.index');
+    Route::get('/client/invoices/{invoice}', [ClientInvoiceController::class, 'show'])->name('client.invoices.show');
+
+    // Client Online Payments (Razorpay)
+    Route::post('/client/invoices/{invoice}/razorpay/order', [ClientRazorpayPaymentController::class, 'createOrder'])->name('client.invoices.razorpay.order');
+    Route::post('/client/invoices/{invoice}/razorpay/verify', [ClientRazorpayPaymentController::class, 'verifyPayment'])->name('client.invoices.razorpay.verify');
+
+    // Client Payment History & Receipts
+    Route::get('/client/payments', [ClientPaymentController::class, 'index'])->name('client.payments.index');
+    Route::get('/client/payments/{payment}', [ClientPaymentController::class, 'show'])->name('client.payments.show');
+    Route::get('/client/payments/{payment}/receipt', [ClientPaymentController::class, 'receipt'])->name('client.payments.receipt');
 });
 
 // Protected Admin CRM Routes

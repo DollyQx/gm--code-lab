@@ -30,6 +30,45 @@
         <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
     </div>
 
+    <!-- Quick Action Banners for Pending Commercial Items -->
+    @if($pendingQuotationsCount > 0 || $unpaidInvoicesCount > 0)
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @if($pendingQuotationsCount > 0)
+                <div class="bg-blue-50/80 border border-blue-200 p-4 rounded-2xl flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <div>
+                            <span class="block text-sm font-bold text-slate-900">{{ $pendingQuotationsCount }} Pending Quotation Proposal{{ $pendingQuotationsCount > 1 ? 's' : '' }}</span>
+                            <span class="block text-xs text-slate-500">Review and approve project estimates</span>
+                        </div>
+                    </div>
+                    <a href="{{ route('client.quotations.index', ['status' => 'sent']) }}" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-sm">
+                        Review Proposals &rarr;
+                    </a>
+                </div>
+            @endif
+
+            @if($unpaidInvoicesCount > 0)
+                <div class="bg-amber-50/80 border border-amber-200 p-4 rounded-2xl flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        </div>
+                        <div>
+                            <span class="block text-sm font-bold text-slate-900">{{ $unpaidInvoicesCount }} Invoice{{ $unpaidInvoicesCount > 1 ? 's' : '' }} Awaiting Settlement</span>
+                            <span class="block text-xs text-slate-500">View statement and pay online</span>
+                        </div>
+                    </div>
+                    <a href="{{ route('client.invoices.index') }}" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all shadow-sm">
+                        View Invoices &rarr;
+                    </a>
+                </div>
+            @endif
+        </div>
+    @endif
+
     <!-- Project Summary Cards Grid -->
     <div class="space-y-3">
         <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Project Overview</h2>

@@ -26,7 +26,7 @@
 
     <!-- Top Action Bar for Screen view -->
     <div class="no-print w-full max-w-3xl mb-6 flex items-center justify-between">
-        <a href="{{ route('admin.payments.show', $payment->id) }}" class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm transition-all">
+        <a href="{{ auth()->user() && auth()->user()->isClient() ? route('client.payments.show', $payment->id) : route('admin.payments.show', $payment->id) }}" class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm transition-all">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
             Back to Payment
         </a>

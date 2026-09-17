@@ -12,7 +12,7 @@ class PaymentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() || ($user->isClient() && $user->isActive());
     }
 
     /**
@@ -20,7 +20,7 @@ class PaymentPolicy
      */
     public function view(User $user, Payment $payment): bool
     {
-        return $user->isAdmin() || ($user->isClient() && (int) $user->id === (int) $payment->client_id);
+        return $user->isAdmin() || ($user->isClient() && $user->isActive() && (int) $user->id === (int) $payment->client_id);
     }
 
     /**
@@ -28,6 +28,6 @@ class PaymentPolicy
      */
     public function generateReceipt(User $user, Payment $payment): bool
     {
-        return $user->isAdmin() || ($user->isClient() && (int) $user->id === (int) $payment->client_id);
+        return $user->isAdmin() || ($user->isClient() && $user->isActive() && (int) $user->id === (int) $payment->client_id);
     }
 }

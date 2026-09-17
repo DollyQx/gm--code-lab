@@ -62,6 +62,15 @@
                         <a href="{{ route('client.projects.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-colors {{ request()->routeIs('client.projects.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             Projects
                         </a>
+                        <a href="{{ route('client.quotations.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-colors {{ request()->routeIs('client.quotations.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                            Quotations
+                        </a>
+                        <a href="{{ route('client.invoices.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-colors {{ request()->routeIs('client.invoices.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                            Invoices
+                        </a>
+                        <a href="{{ route('client.payments.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-colors {{ request()->routeIs('client.payments.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                            Payments
+                        </a>
                         <a href="{{ route('client.profile') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-colors {{ request()->routeIs('client.profile') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             My Profile
                         </a>
@@ -104,6 +113,9 @@
         <div id="client-mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-2">
             <a href="{{ route('client.dashboard') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.dashboard') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Dashboard</a>
             <a href="{{ route('client.projects.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.projects.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Projects</a>
+            <a href="{{ route('client.quotations.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.quotations.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Quotations</a>
+            <a href="{{ route('client.invoices.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.invoices.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Invoices</a>
+            <a href="{{ route('client.payments.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.payments.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Payments</a>
             <a href="{{ route('client.profile') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.profile') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">My Profile</a>
             <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
                 <div>

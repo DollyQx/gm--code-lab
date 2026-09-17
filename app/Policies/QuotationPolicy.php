@@ -12,7 +12,7 @@ class QuotationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() || ($user->isClient() && $user->isActive());
     }
 
     /**
@@ -20,7 +20,23 @@ class QuotationPolicy
      */
     public function view(User $user, Quotation $quotation): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() || ($user->isClient() && $user->isActive() && (int) $user->id === (int) $quotation->client_id);
+    }
+
+    /**
+     * Determine whether the user can accept the quotation.
+     */
+    public function accept(User $user, Quotation $quotation): bool
+    {
+        return $user->isClient() && $user->isActive() && (int) $user->id === (int) $quotation->client_id;
+    }
+
+    /**
+     * Determine whether the user can reject the quotation.
+     */
+    public function reject(User $user, Quotation $quotation): bool
+    {
+        return $user->isClient() && $user->isActive() && (int) $user->id === (int) $quotation->client_id;
     }
 
     /**

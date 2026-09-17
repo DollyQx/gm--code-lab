@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Enums\InvoiceStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\ProjectStatus;
+use App\Enums\QuotationStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -28,6 +29,18 @@ class DashboardController extends Controller
         ])->count();
         $completedProjects = $user->projects()->where('status', ProjectStatus::COMPLETED)->count();
 
+        // Commercial Action Item Counts
+        $pendingQuotationsCount = $user->quotations()->whereIn('status', [
+            QuotationStatus::SENT,
+            QuotationStatus::VIEWED,
+        ])->count();
+
+        $unpaidInvoicesCount = $user->invoices()->whereIn('status', [
+            InvoiceStatus::ISSUED,
+            InvoiceStatus::PARTIALLY_PAID,
+            InvoiceStatus::OVERDUE,
+        ])->count();
+
         // Financial Summary Metrics
         $totalInvoiced = (float) $user->invoices()->sum('total');
         $totalPaid = (float) $user->payments()->where('status', PaymentStatus::PAID)->sum('amount');
@@ -50,6 +63,8 @@ class DashboardController extends Controller
             'totalProjects',
             'activeProjects',
             'completedProjects',
+            'pendingQuotationsCount',
+            'unpaidInvoicesCount',
             'totalInvoiced',
             'totalPaid',
             'outstandingAmount',
