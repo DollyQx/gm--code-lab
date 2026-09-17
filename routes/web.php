@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\ProjectTaskController as AdminProjectTaskControll
 use App\Http\Controllers\Admin\QuotationController as AdminQuotationController;
 use App\Http\Controllers\Admin\InvoiceController as AdminInvoiceController;
 use App\Http\Controllers\Admin\RazorpayPaymentController as AdminRazorpayPaymentController;
+use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Public\RazorpayWebhookController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\ClientLoginController;
@@ -151,6 +152,11 @@ Route::middleware(['auth', 'active', 'role:admin,super_admin'])->prefix('admin')
     // Razorpay Payment Integration (Phase 6C)
     Route::post('/invoices/{invoice}/razorpay/order', [AdminRazorpayPaymentController::class, 'createOrder'])->name('invoices.razorpay.order');
     Route::post('/invoices/{invoice}/razorpay/verify', [AdminRazorpayPaymentController::class, 'verifyPayment'])->name('invoices.razorpay.verify');
+
+    // Payment History & Receipts (Phase 6D)
+    Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
+    Route::get('/payments/{payment}', [AdminPaymentController::class, 'show'])->name('payments.show');
+    Route::get('/payments/{payment}/receipt', [AdminPaymentController::class, 'receipt'])->name('payments.receipt');
 });
 
 // Public Webhooks (Phase 6C)

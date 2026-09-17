@@ -14,6 +14,7 @@ class Payment extends Model
 
     protected $fillable = [
         'reference_number',
+        'receipt_number',
         'client_id',
         'project_id',
         'quotation_id',
@@ -74,5 +75,18 @@ class Payment extends Model
     public function milestone(): BelongsTo
     {
         return $this->belongsTo(ProjectMilestone::class, 'milestone_id');
+    }
+
+    /**
+     * Ensure a unique receipt number exists for this payment.
+     */
+    public function generateReceiptNumber(): string
+    {
+        if (empty($this->receipt_number)) {
+            $this->receipt_number = ReferenceNumberGenerator::generate('payments', 'GMC-REC', 'receipt_number');
+            $this->save();
+        }
+
+        return $this->receipt_number;
     }
 }

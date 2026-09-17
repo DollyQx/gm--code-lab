@@ -92,6 +92,79 @@
         </div>
     </div>
 
+    <!-- Financial Collection Overview Section (Phase 6D) -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div>
+                <h2 class="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Financial Summary & Revenue Overview
+                </h2>
+                <p class="text-xs text-slate-500 mt-0.5">Authoritative invoice balances and payment collection statistics.</p>
+            </div>
+
+            <!-- Financial Period Filter Form -->
+            <form method="GET" action="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
+                <label for="period" class="text-xs font-semibold text-slate-500 uppercase">Period:</label>
+                <select id="period" name="period" onchange="this.form.submit()" class="px-3 py-1.5 text-xs font-semibold rounded-xl border border-slate-200 focus:border-blue-500 text-slate-800 bg-slate-50">
+                    <option value="all_time" {{ $stats['selected_period'] === 'all_time' ? 'selected' : '' }}>All Time</option>
+                    <option value="today" {{ $stats['selected_period'] === 'today' ? 'selected' : '' }}>Today</option>
+                    <option value="this_week" {{ $stats['selected_period'] === 'this_week' ? 'selected' : '' }}>This Week</option>
+                    <option value="this_month" {{ $stats['selected_period'] === 'this_month' ? 'selected' : '' }}>This Month</option>
+                    <option value="this_year" {{ $stats['selected_period'] === 'this_year' ? 'selected' : '' }}>This Year</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Total Collected Card -->
+            <div class="bg-gradient-to-br from-emerald-50 to-teal-50/50 p-5 rounded-xl border border-emerald-200/70">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-800">Total Collected</span>
+                <div class="text-2xl font-extrabold text-emerald-900 mt-2 font-mono">
+                    ₹{{ number_format((float)$stats['total_collected'], 2) }}
+                </div>
+                <p class="text-[11px] text-emerald-700 mt-1">Verified payment credits ({{ ucfirst(str_replace('_', ' ', $stats['selected_period'])) }})</p>
+            </div>
+
+            <!-- Outstanding Balance Card -->
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50/50 p-5 rounded-xl border border-amber-200/70">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-800">Outstanding Balance</span>
+                <div class="text-2xl font-extrabold text-amber-900 mt-2 font-mono">
+                    ₹{{ number_format((float)$stats['outstanding_balance'], 2) }}
+                </div>
+                <p class="text-[11px] text-amber-700 mt-1">Remaining balance across active invoices</p>
+            </div>
+
+            <!-- Overdue Balance Card -->
+            <div class="bg-gradient-to-br from-rose-50 to-pink-50/50 p-5 rounded-xl border border-rose-200/70">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-800">Overdue Invoices</span>
+                <div class="text-2xl font-extrabold text-rose-900 mt-2 font-mono">
+                    ₹{{ number_format((float)$stats['overdue_balance'], 2) }}
+                </div>
+                <p class="text-[11px] text-rose-700 mt-1"><span class="font-bold">{{ $stats['overdue_invoices'] }}</span> overdue invoice(s)</p>
+            </div>
+
+            <!-- Invoice Status Distribution Card -->
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200/80 space-y-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Invoice Status Breakdown</span>
+                <div class="grid grid-cols-3 gap-1 text-center pt-1">
+                    <div class="bg-white p-2 rounded-lg border border-slate-200/60">
+                        <span class="text-[10px] font-bold text-emerald-600 block uppercase">Paid</span>
+                        <span class="text-base font-extrabold text-slate-900">{{ $stats['paid_invoices'] }}</span>
+                    </div>
+                    <div class="bg-white p-2 rounded-lg border border-slate-200/60">
+                        <span class="text-[10px] font-bold text-amber-600 block uppercase">Partial</span>
+                        <span class="text-base font-extrabold text-slate-900">{{ $stats['partially_paid_invoices'] }}</span>
+                    </div>
+                    <div class="bg-white p-2 rounded-lg border border-slate-200/60">
+                        <span class="text-[10px] font-bold text-slate-500 block uppercase">Unpaid</span>
+                        <span class="text-base font-extrabold text-slate-900">{{ $stats['unpaid_invoices'] }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Lead Pipeline Breakdown Summary Bar -->
     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
         <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Lead Pipeline Stage Breakdown</h3>
@@ -232,7 +305,7 @@
         </div>
 
         <!-- Recent Invoices (Phase 6B) -->
-        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col lg:col-span-2">
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
             <div class="p-5 border-b border-slate-200 flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-slate-900">Recent Invoices</h3>
@@ -247,16 +320,15 @@
                             <th class="px-5 py-3">Invoice #</th>
                             <th class="px-5 py-3">Client</th>
                             <th class="px-5 py-3">Total</th>
-                            <th class="px-5 py-3">Amount Due</th>
+                            <th class="px-5 py-3">Due</th>
                             <th class="px-5 py-3">Status</th>
-                            <th class="px-5 py-3 text-right">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 text-xs">
                         @forelse($recentInvoices as $inv)
                             <tr class="hover:bg-slate-50">
                                 <td class="px-5 py-3 font-mono font-semibold text-blue-600">
-                                    {{ $inv->reference_number }}
+                                    <a href="{{ route('admin.invoices.show', $inv->id) }}" class="hover:underline">{{ $inv->reference_number }}</a>
                                 </td>
                                 <td class="px-5 py-3 font-semibold text-slate-900">
                                     {{ $inv->client->name ?? 'N/A' }}
@@ -268,18 +340,68 @@
                                     ₹{{ number_format((float)$inv->amount_due, 2) }}
                                 </td>
                                 <td class="px-5 py-3">
-                                    <span class="inline-flex px-2 py-0.5 text-xs font-bold rounded-full {{ $inv->status->badgeClass() }}">
+                                    <span class="inline-flex px-2 py-0.5 text-[11px] font-bold rounded-full {{ $inv->status->badgeClass() }}">
                                         {{ $inv->status->label() }}
                                     </span>
-                                </td>
-                                <td class="px-5 py-3 text-right">
-                                    <a href="{{ route('admin.invoices.show', $inv->id) }}" class="text-xs font-semibold text-blue-600 hover:underline">Workspace</a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-5 py-8 text-center text-xs text-slate-500">
-                                    No invoices issued yet. <a href="{{ route('admin.invoices.create') }}" class="text-blue-600 font-semibold hover:underline">Create invoice</a>.
+                                <td colspan="5" class="px-5 py-8 text-center text-xs text-slate-500">
+                                    No invoices issued yet.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Payments Ledger (Phase 6D) -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-slate-900">Recent Payments Ledger</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Online Razorpay & manual payment entries</p>
+                </div>
+                <a href="{{ route('admin.payments.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700">View All &rarr;</a>
+            </div>
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                        <tr>
+                            <th class="px-5 py-3">Payment Ref</th>
+                            <th class="px-5 py-3">Client</th>
+                            <th class="px-5 py-3 text-right">Amount</th>
+                            <th class="px-5 py-3">Method</th>
+                            <th class="px-5 py-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 text-xs">
+                        @forelse($recentPayments as $pay)
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-5 py-3 font-mono font-semibold text-blue-600">
+                                    <a href="{{ route('admin.payments.show', $pay->id) }}" class="hover:underline">{{ $pay->reference_number }}</a>
+                                </td>
+                                <td class="px-5 py-3 font-semibold text-slate-900">
+                                    {{ $pay->client->name ?? 'N/A' }}
+                                </td>
+                                <td class="px-5 py-3 text-right font-mono font-bold text-emerald-600">
+                                    ₹{{ number_format((float)$pay->amount, 2) }}
+                                </td>
+                                <td class="px-5 py-3 capitalize text-slate-700">
+                                    {{ $pay->payment_method ?? 'Manual' }}
+                                </td>
+                                <td class="px-5 py-3">
+                                    <span class="inline-flex px-2 py-0.5 text-[11px] font-bold rounded-full {{ $pay->status->badgeClass() }}">
+                                        {{ $pay->status->label() }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-5 py-8 text-center text-xs text-slate-500">
+                                    No payments recorded yet.
                                 </td>
                             </tr>
                         @endforelse
