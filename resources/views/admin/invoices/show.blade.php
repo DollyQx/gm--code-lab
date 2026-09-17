@@ -42,10 +42,16 @@
                 </select>
             </form>
 
-            @if(!in_array($invoice->status->value, ['paid', 'cancelled']))
+            @if(!in_array($invoice->status->value, ['paid', 'cancelled']) && (float)$invoice->amount_due > 0)
                 <a href="{{ route('admin.invoices.edit', $invoice->id) }}" class="bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 font-medium text-xs px-3.5 py-2.5 rounded-xl transition-all">
                     Edit Invoice
                 </a>
+
+                <!-- Pay Online via Razorpay Button -->
+                <button type="button" id="pay-online-btn" onclick="initiateRazorpayPayment()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm shadow-blue-500/20 flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    Pay Online (Razorpay)
+                </button>
 
                 <!-- Record Payment Button -->
                 <button type="button" onclick="document.getElementById('record-payment-modal').classList.remove('hidden')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm shadow-emerald-500/20 flex items-center gap-1.5">
@@ -328,4 +334,105 @@
         </form>
     </div>
 </div>
+
+<!-- Razorpay Checkout Integration -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+function initiateRazorpayPayment() {
+    const btn = document.getElementById('pay-online-btn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = 'Processing...';
+    }
+
+    fetch("{{ route('admin.invoices.razorpay.order', $invoice->id) }}", {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (!data.success) {
+            alert(data.message || 'Could not initiate Razorpay order.');
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = 'Pay Online (Razorpay)';
+            }
+            return;
+        }
+
+        const options = {
+            key: data.key_id,
+            amount: data.amount,
+            currency: data.currency || "INR",
+            name: "GM CODE LAB",
+            description: "Invoice #" + data.invoice_number + " Payment",
+            order_id: data.order_id,
+            prefill: {
+                name: data.client_name,
+                email: data.client_email
+            },
+            theme: {
+                color: "#2563eb"
+            },
+            handler: function (response) {
+                // Submit signature to server for verification
+                fetch("{{ route('admin.invoices.razorpay.verify', $invoice->id) }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                })
+                .then(res => res.json())
+                .then(verifyResult => {
+                    if (verifyResult.success) {
+                        window.location.reload();
+                    } else {
+                        alert(verifyResult.message || 'Signature verification failed.');
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerHTML = 'Pay Online (Razorpay)';
+                        }
+                    }
+                })
+                .catch(err => {
+                    alert('Error verifying payment.');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = 'Pay Online (Razorpay)';
+                    }
+                });
+            },
+            modal: {
+                ondismiss: function () {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = 'Pay Online (Razorpay)';
+                    }
+                }
+            }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+    })
+    .catch(err => {
+        alert('Failed to connect to server.');
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = 'Pay Online (Razorpay)';
+        }
+    });
+}
+</script>
 @endsection
