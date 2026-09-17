@@ -15,8 +15,8 @@ graph TD
     PublicIndex --> LaravelCore[Laravel 12 Application Core]
 
     subgraph Laravel Framework Core
-        LaravelCore --> Middleware[Auth, CSRF & Security Middleware]
-        Middleware --> Routing[Web & API Router]
+        LaravelCore --> Middleware[Auth, Active & Role Middleware]
+        Middleware --> Routing[Web Router - Admin & Client Portals]
         Routing --> Controllers[HTTP Controllers]
 
         subgraph Application Business Layer
@@ -27,10 +27,10 @@ graph TD
         end
 
         subgraph Security & Access Control
-            Controllers --> Policies[Laravel Policies & Gates - RBAC]
+            Controllers --> Policies[Laravel Policies & Gates - ClientProfilePolicy]
         end
 
-        Repositories --> Eloquent[Eloquent ORM Models]
+        Repositories --> Eloquent[Eloquent ORM Models - User & ClientProfile]
     end
 
     Eloquent --> MySQL[(MySQL / MariaDB Database)]
@@ -45,26 +45,27 @@ graph TD
 ### 3.1 Layered Architecture
 To prevent controller bloat and ensure high maintainability, the application strictly separates concerns into discrete software layers:
 
-1. **HTTP Layer (`app/Http/Controllers`)**: Handles HTTP requests, triggers authorization checks, delegates execution to domain services, and returns views or API responses.
+1. **HTTP Layer (`app/Http/Controllers`)**: Handles HTTP requests for Admin and Client portals, triggers authorization checks, delegates execution to domain services, and returns views or API responses.
 2. **Validation Layer (`app/Http/Requests`)**: Encapsulates incoming request validation rules and initial request authorization.
-3. **Domain Service Layer (`app/Services`)**: Contains pure business logic (e.g., dynamic quote calculation, invoice generation, project status progression).
+3. **Domain Service Layer (`app/Services`)**: Contains pure business logic.
 4. **Data Repository Layer (`app/Repositories`)**: Encapsulates database queries, keeping data access logic decoupled from business rules.
-5. **Persistence Layer (`app/Models`)**: Eloquent models representing domain entities, relationships, scopes, and attributes.
-6. **Authorization Layer (`app/Policies`)**: Granular authorization rules mapped to entities for Role-Based Access Control (RBAC).
+5. **Persistence Layer (`app/Models`)**: Eloquent models (`User`, `ClientProfile`) representing domain entities, relationships, scopes, and attributes.
+6. **Authorization Layer (`app/Policies`)**: Granular authorization rules mapped to entities for Role-Based Access Control (RBAC) and cross-client data isolation.
 
 ### 3.2 Directory Structure Blueprint
 ```
 app/
-├── Enums/                 # Application state enums (Status, Priority, Roles)
+├── Console/
+│   └── Commands/          # CLI management commands (admin:create)
+├── Enums/                 # Application state enums (UserRole, UserStatus)
 ├── Http/
-│   ├── Controllers/       # Clean, lightweight controllers
-│   ├── Middleware/        # Hostinger compatibility, security headers, RBAC
+│   ├── Controllers/       # Auth, Admin, and Client controllers
+│   ├── Middleware/        # Hostinger compatibility, security headers, RBAC (EnsureUserHasRole, EnsureUserIsActive)
 │   └── Requests/          # Dedicated form validation classes
-├── Models/                # Eloquent models & relationship definitions
-├── Policies/              # Access control policies for entities
+├── Models/                # Eloquent models & relationship definitions (User, ClientProfile)
+├── Policies/              # Access control policies (ClientProfilePolicy)
 ├── Repositories/          # Data abstraction layer for Eloquent queries
-├── Services/              # Core business logic processing engine
-└── Providers/             # Application & Service Binding providers
+└── Services/              # Core business logic processing engine
 ```
 
 ---
@@ -73,33 +74,38 @@ app/
 
 The database relies on **MySQL 8.0 / MariaDB** with strict relational integrity, indexed foreign keys, and UTF8MB4 character encoding.
 
-### Core Entities & Relationships
+### Core Implemented Entities (Phase 2)
 
-| Entity Module | Primary Table | Key Foreign Keys & Relations |
-| :--- | :--- | :--- |
-| **Identity & RBAC** | `users`, `roles`, `permissions`, `model_has_roles` | Linked via pivot tables for flexible permission management |
-| **CRM & Leads** | `leads`, `lead_activities` | `user_id` (assigned manager), `lead_id` |
-| **Quotes & Proposals** | `quotes`, `quote_items` | `lead_id`, `client_id`, `created_by` |
-| **Projects & Tasks** | `projects`, `milestones`, `tasks` | `client_id`, `quote_id`, `project_id`, `milestone_id` |
-| **Billing & Finance** | `invoices`, `invoice_items`, `payments` | `project_id`, `client_id`, `milestone_id`, `coupon_id` |
-| **Promotions** | `coupons`, `coupon_usages` | `coupon_id`, `client_id`, `invoice_id` |
-| **Support & Tickets** | `tickets`, `ticket_messages` | `client_id`, `project_id`, `assigned_to` |
-| **Content Management**| `services`, `portfolio_items` | Self-contained CMS items with slug indexing |
+| Entity Module | Primary Table | Primary & Foreign Keys | Key Attributes & Indexes |
+| :--- | :--- | :--- | :--- |
+| **Authentication & Accounts** | `users` | `id` (PK) | `email` (unique, index), `phone` (index), `role` (index), `status` (index), `password`, `email_verified_at`, `last_login_at` |
+| **Client Business Information** | `client_profiles` | `id` (PK), `user_id` (FK, unique, cascade) | `company_name` (index), `contact_person`, `gst_vat_number`, `tax_id`, `industry`, `city`, `country` |
+| **Session Protection** | `sessions` | `id` (PK) | `user_id` (index), `ip_address`, `last_activity` (index) |
+| **Password Resets** | `password_reset_tokens` | `email` (PK) | `token`, `created_at` |
 
 ---
 
 ## 5. Security & Authorization Architecture
 
 1. **Role-Based Access Control (RBAC)**:
-   - Built using standard Laravel Gate & Policy infrastructure.
-   - Roles: `Super Admin`, `Project Manager`, `Finance Lead`, `Support Specialist`, `Client`.
-   - Every resource controller method is guarded by `$this->authorize()` or Policy middleware.
+   - Built using native Laravel Enums, Middlewares, and Policies.
+   - Enums: `UserRole` (`admin`, `client`, `super_admin`, `project_manager`, `developer`, `finance`, `support`).
+   - Portal Segregation:
+     - Public client registration creates `client` role accounts only.
+     - Administrative accounts (`admin`, `super_admin`) cannot be created publicly; provisioned interactively via CLI (`php artisan admin:create`).
+     - Separate login endpoints: Client Login (`/login`) and Admin Login (`/admin/login`).
 
-2. **Data & Request Protection**:
+2. **Cross-Client Data Isolation**:
+   - Enforced server-side via `ClientProfilePolicy`.
+   - Client accounts are restricted to viewing/editing strictly their own profile (`$user->id === $clientProfile->user_id`).
+   - Administrative accounts possess global view/edit permissions across profiles.
+
+3. **Data & Request Protection**:
+   - **Rate Limiting**: Throttling (`throttle:6,1`) applied to all login, registration, password reset, and verification endpoints.
    - **SQL Injection**: Handled natively by PDO parameter binding through Eloquent ORM.
    - **XSS**: Automatic HTML entity escaping via Blade templating (`{{ $value }}`).
    - **CSRF**: Token validation required on all state-mutating requests (`POST`, `PUT`, `PATCH`, `DELETE`).
-   - **File Upload Security**: Uploads validated by mime-type and stored outside the public web root in `storage/app/protected`. File delivery handled via authorized streaming endpoints.
+   - **Session Protection**: Session ID regenerated on login, invalidated on logout, and cleared upon account deactivation/suspension.
 
 ---
 
@@ -118,9 +124,6 @@ Hostinger shared hosting environments typically restrict root directory structur
      - `php artisan route:cache`
      - `php artisan view:cache`
 
-3. **Database Connectivity**:
-   - Configured for standard MySQL sockets or TCP connection over `127.0.0.1:3306`.
-
 ---
 
 ## 7. Version Control & Development Workflow
@@ -128,6 +131,5 @@ Hostinger shared hosting environments typically restrict root directory structur
 - **Branching Model**:
   - `main`: Production-ready branch. Must remain stable and tested at all times.
   - `develop`: Primary integration branch for active development.
-  - `feature/*`: Short-lived feature branches created off `develop` and merged via Pull Requests/Code Reviews.
 - **Commit Guidelines**:
-  - Conventional commit prefixes (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`).
+  - Feature-based, meaningful commit messages (`feat: add authentication foundation`, `feat: add role based authorization`, `feat: add client account foundation`, `test: add authentication and authorization tests`).
