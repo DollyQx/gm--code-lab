@@ -12,7 +12,7 @@ class ProjectPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() || ($user->isClient() && $user->isActive());
     }
 
     /**
@@ -24,7 +24,7 @@ class ProjectPolicy
             return true;
         }
 
-        return false;
+        return $user->isClient() && $user->isActive() && (int) $user->id === (int) $project->client_id;
     }
 
     /**

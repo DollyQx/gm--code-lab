@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Enums\InvoiceStatus;
+use App\Enums\PaymentStatus;
+use App\Enums\ProjectStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -9,13 +12,48 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     /**
-     * Display the basic client dashboard.
+     * Display the enhanced client dashboard.
      */
     public function index(Request $request): View
     {
-        $client = $request->user();
-        $profile = $client->clientProfile;
+        $user = $request->user();
+        $profile = $user->clientProfile;
 
-        return view('client.dashboard', compact('client', 'profile'));
+        // Project Summary Counts
+        $totalProjects = $user->projects()->count();
+        $activeProjects = $user->projects()->whereIn('status', [
+            ProjectStatus::IN_PROGRESS,
+            ProjectStatus::ON_HOLD,
+            ProjectStatus::PLANNING,
+        ])->count();
+        $completedProjects = $user->projects()->where('status', ProjectStatus::COMPLETED)->count();
+
+        // Financial Summary Metrics
+        $totalInvoiced = (float) $user->invoices()->sum('total');
+        $totalPaid = (float) $user->payments()->where('status', PaymentStatus::PAID)->sum('amount');
+        $outstandingAmount = (float) $user->invoices()->whereIn('status', [
+            InvoiceStatus::ISSUED,
+            InvoiceStatus::PARTIALLY_PAID,
+            InvoiceStatus::OVERDUE,
+        ])->sum('amount_due');
+
+        // Recent Projects with Milestones for progress calculation
+        $recentProjects = $user->projects()
+            ->with(['service', 'milestones'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('client.dashboard', compact(
+            'user',
+            'profile',
+            'totalProjects',
+            'activeProjects',
+            'completedProjects',
+            'totalInvoiced',
+            'totalPaid',
+            'outstandingAmount',
+            'recentProjects'
+        ));
     }
 }

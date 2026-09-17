@@ -20,6 +20,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\ProfileController;
+use App\Http\Controllers\Client\ProjectController as ClientProjectController;
 use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
@@ -86,6 +87,10 @@ Route::middleware(['auth', 'active', 'role:client'])->group(function () {
     Route::get('/client/dashboard', [ClientDashboardController::class, 'index'])->name('client.dashboard');
     Route::get('/client/profile', [ProfileController::class, 'show'])->name('client.profile');
     Route::put('/client/profile', [ProfileController::class, 'update'])->name('client.profile.update');
+
+    // Client Projects
+    Route::get('/client/projects', [ClientProjectController::class, 'index'])->name('client.projects.index');
+    Route::get('/client/projects/{project}', [ClientProjectController::class, 'show'])->name('client.projects.show');
 });
 
 // Protected Admin CRM Routes

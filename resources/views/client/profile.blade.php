@@ -1,98 +1,134 @@
-@extends('layouts.app')
+@extends('layouts.client')
 
 @section('title', 'My Profile')
 
 @section('content')
-    <div style="margin-bottom: 2rem;">
-        <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">Client Account Profile</h1>
-        <p style="color: var(--text-muted); font-size: 0.875rem;">Manage your account credentials and business organization information.</p>
+<div class="space-y-6 max-w-4xl mx-auto">
+
+    <!-- Page Header -->
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Client Account Profile</h1>
+        <p class="text-sm text-slate-500 mt-1">Manage your account credentials, business contact info, and billing addresses.</p>
     </div>
 
-    <div class="card">
-        <form method="POST" action="{{ route('client.profile.update') }}">
+    <!-- Profile Form Card -->
+    <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-sm">
+        <form method="POST" action="{{ route('client.profile.update') }}" class="space-y-8">
             @csrf
             @method('PUT')
 
-            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; color: #60a5fa;">Account & Personal Details</h3>
+            <!-- Account Details Section -->
+            <div class="space-y-4">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-blue-600 border-b border-slate-100 pb-2 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    Account & Personal Details
+                </h3>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 1.75rem;">
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">Full Name</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
-                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label for="name" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Full Name *</label>
+                        <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" required class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium">
+                        @error('name')
+                            <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">Email Address (Read-only)</label>
-                    <input type="email" value="{{ $user->email }}" disabled class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(17, 24, 39, 0.8); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-muted); cursor: not-allowed;">
-                </div>
+                    <div>
+                        <label for="email" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Email Address (Read-only)</label>
+                        <input type="email" id="email" value="{{ $user->email }}" disabled class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-100 text-slate-500 font-mono cursor-not-allowed">
+                    </div>
 
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">Phone Number</label>
-                    <input type="text" name="phone" value="{{ old('phone', $user->phone ?? $profile->phone) }}" class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
-                </div>
-            </div>
-
-            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; color: #a78bfa;">Company & Business Details</h3>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 1.75rem;">
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">Company / Organization Name</label>
-                    <input type="text" name="company_name" value="{{ old('company_name', $profile->company_name) }}" class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
-                </div>
-
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">Contact Person</label>
-                    <input type="text" name="contact_person" value="{{ old('contact_person', $profile->contact_person) }}" class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
-                </div>
-
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">GST / VAT Number</label>
-                    <input type="text" name="gst_vat_number" value="{{ old('gst_vat_number', $profile->gst_vat_number) }}" class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
-                </div>
-
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">Industry / Sector</label>
-                    <input type="text" name="industry" value="{{ old('industry', $profile->industry) }}" class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
-                </div>
-
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">Website URL</label>
-                    <input type="url" name="website" value="{{ old('website', $profile->website) }}" placeholder="https://example.com" class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
+                    <div>
+                        <label for="phone" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Phone Number</label>
+                        <input type="text" id="phone" name="phone" value="{{ old('phone', $user->phone ?? $profile->phone) }}" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium">
+                        @error('phone')
+                            <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </div>
 
-            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; color: #34d399;">Billing & Address Details</h3>
+            <!-- Business & Company Details Section -->
+            <div class="space-y-4">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-indigo-600 border-b border-slate-100 pb-2 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    Company & Business Details
+                </h3>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
-                <div style="grid-column: 1 / -1;">
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">Address Line 1</label>
-                    <input type="text" name="address_line1" value="{{ old('address_line1', $profile->address_line1) }}" class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
-                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label for="company_name" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Company / Organization Name</label>
+                        <input type="text" id="company_name" name="company_name" value="{{ old('company_name', $profile->company_name) }}" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium">
+                    </div>
 
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">City</label>
-                    <input type="text" name="city" value="{{ old('city', $profile->city) }}" class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
-                </div>
+                    <div>
+                        <label for="contact_person" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Contact Person</label>
+                        <input type="text" id="contact_person" name="contact_person" value="{{ old('contact_person', $profile->contact_person) }}" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium">
+                    </div>
 
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">State / Province</label>
-                    <input type="text" name="state" value="{{ old('state', $profile->state) }}" class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
-                </div>
+                    <div>
+                        <label for="gst_vat_number" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">GST / VAT Number</label>
+                        <input type="text" id="gst_vat_number" name="gst_vat_number" value="{{ old('gst_vat_number', $profile->gst_vat_number) }}" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium font-mono">
+                    </div>
 
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">Postal Code</label>
-                    <input type="text" name="postal_code" value="{{ old('postal_code', $profile->postal_code) }}" class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
-                </div>
+                    <div>
+                        <label for="industry" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Industry / Sector</label>
+                        <input type="text" id="industry" name="industry" value="{{ old('industry', $profile->industry) }}" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium">
+                    </div>
 
-                <div>
-                    <label class="form-label" style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem;">Country</label>
-                    <input type="text" name="country" value="{{ old('country', $profile->country) }}" class="form-input" style="width: 100%; padding: 0.75rem; background: rgba(31, 41, 55, 0.6); border: 1px solid var(--border-color); border-radius: 8px; color: #fff;">
+                    <div class="sm:col-span-2">
+                        <label for="website" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Website URL</label>
+                        <input type="url" id="website" name="website" value="{{ old('website', $profile->website) }}" placeholder="https://example.com" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium">
+                        @error('website')
+                            <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </div>
 
-            <button type="submit" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                Save Profile Changes
-            </button>
+            <!-- Billing Address Section -->
+            <div class="space-y-4">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-emerald-600 border-b border-slate-100 pb-2 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Billing & Address Details
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="sm:col-span-2">
+                        <label for="address_line1" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Address Line 1</label>
+                        <input type="text" id="address_line1" name="address_line1" value="{{ old('address_line1', $profile->address_line1) }}" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium">
+                    </div>
+
+                    <div>
+                        <label for="city" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">City</label>
+                        <input type="text" id="city" name="city" value="{{ old('city', $profile->city) }}" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium">
+                    </div>
+
+                    <div>
+                        <label for="state" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">State / Province</label>
+                        <input type="text" id="state" name="state" value="{{ old('state', $profile->state) }}" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium">
+                    </div>
+
+                    <div>
+                        <label for="postal_code" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Postal Code</label>
+                        <input type="text" id="postal_code" name="postal_code" value="{{ old('postal_code', $profile->postal_code) }}" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium font-mono">
+                    </div>
+
+                    <div>
+                        <label for="country" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Country</label>
+                        <input type="text" id="country" name="country" value="{{ old('country', $profile->country) }}" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 text-slate-900 font-medium">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md shadow-blue-500/20">
+                    Save Profile Changes
+                </button>
+            </div>
         </form>
     </div>
+
+</div>
 @endsection
