@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\LeadStatus;
 use App\Enums\ProjectStatus;
+use App\Enums\QuotationStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
 use App\Models\Project;
+use App\Models\Quotation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -54,6 +56,13 @@ class DashboardController extends Controller
             ->whereNotNull('expected_completion_date')
             ->where('expected_completion_date', '<', now()->toDateString())
             ->count(),
+
+            // Quotation Metrics (Phase 6A)
+            'total_quotations' => Quotation::count(),
+            'draft_quotations' => Quotation::where('status', QuotationStatus::DRAFT->value)->count(),
+            'sent_quotations' => Quotation::where('status', QuotationStatus::SENT->value)->count(),
+            'accepted_quotations' => Quotation::where('status', QuotationStatus::ACCEPTED->value)->count(),
+            'expired_quotations' => Quotation::where('status', QuotationStatus::EXPIRED->value)->count(),
         ];
 
         $recentLeads = Lead::with('assignedUser')
@@ -72,6 +81,18 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view('admin.dashboard', compact('adminUser', 'stats', 'recentLeads', 'recentClients', 'recentProjects'));
+        $recentQuotations = Quotation::with(['client', 'project'])
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'adminUser',
+            'stats',
+            'recentLeads',
+            'recentClients',
+            'recentProjects',
+            'recentQuotations'
+        ));
     }
 }

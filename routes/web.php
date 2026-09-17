@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\ProjectRequirementController as AdminProjectRequirementController;
 use App\Http\Controllers\Admin\ProjectMilestoneController as AdminProjectMilestoneController;
 use App\Http\Controllers\Admin\ProjectTaskController as AdminProjectTaskController;
+use App\Http\Controllers\Admin\QuotationController as AdminQuotationController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\ClientLoginController;
 use App\Http\Controllers\Auth\ClientRegisterController;
@@ -124,5 +125,14 @@ Route::middleware(['auth', 'active', 'role:admin,super_admin'])->prefix('admin')
     Route::post('/projects/{project}/tasks', [AdminProjectTaskController::class, 'store'])->name('projects.tasks.store');
     Route::put('/projects/{project}/tasks/{task}', [AdminProjectTaskController::class, 'update'])->name('projects.tasks.update');
     Route::patch('/projects/{project}/tasks/{task}/status', [AdminProjectTaskController::class, 'updateStatus'])->name('projects.tasks.status');
+
+    // Quotation Management
+    Route::get('/quotations', [AdminQuotationController::class, 'index'])->name('quotations.index');
+    Route::get('/quotations/create', [AdminQuotationController::class, 'create'])->name('quotations.create');
+    Route::post('/quotations', [AdminQuotationController::class, 'store'])->name('quotations.store');
+    Route::get('/quotations/{quotation}', [AdminQuotationController::class, 'show'])->name('quotations.show');
+    Route::get('/quotations/{quotation}/edit', [AdminQuotationController::class, 'edit'])->name('quotations.edit');
+    Route::put('/quotations/{quotation}', [AdminQuotationController::class, 'update'])->name('quotations.update');
+    Route::patch('/quotations/{quotation}/status', [AdminQuotationController::class, 'updateStatus'])->name('quotations.status');
 });
 

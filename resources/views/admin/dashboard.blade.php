@@ -20,60 +20,74 @@
     </div>
 
     <!-- Top Summary Stat Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
         <!-- Total Clients -->
-        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Clients</span>
-                <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
             </div>
-            <div class="mt-4">
-                <div class="text-3xl font-extrabold text-slate-900">{{ number_format($stats['total_clients']) }}</div>
-                <p class="text-xs text-slate-500 mt-1"><span class="text-emerald-600 font-semibold">{{ $stats['active_clients'] }}</span> active accounts</p>
+            <div class="mt-3">
+                <div class="text-2xl font-extrabold text-slate-900">{{ number_format($stats['total_clients']) }}</div>
+                <p class="text-[11px] text-slate-500 mt-1"><span class="text-emerald-600 font-semibold">{{ $stats['active_clients'] }}</span> active accounts</p>
             </div>
         </div>
 
         <!-- Total Leads -->
-        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Leads</span>
-                <div class="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                 </div>
             </div>
-            <div class="mt-4">
-                <div class="text-3xl font-extrabold text-slate-900">{{ number_format($stats['total_leads']) }}</div>
-                <p class="text-xs text-slate-500 mt-1"><span class="text-blue-600 font-semibold">{{ $stats['new_leads'] }}</span> new inquiries</p>
+            <div class="mt-3">
+                <div class="text-2xl font-extrabold text-slate-900">{{ number_format($stats['total_leads']) }}</div>
+                <p class="text-[11px] text-slate-500 mt-1"><span class="text-blue-600 font-semibold">{{ $stats['new_leads'] }}</span> new inquiries</p>
             </div>
         </div>
 
-        <!-- Total Projects (Phase 5B) -->
-        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <!-- Total Projects -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Projects</span>
-                <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 </div>
             </div>
-            <div class="mt-4">
-                <div class="text-3xl font-extrabold text-slate-900">{{ number_format($stats['total_projects']) }}</div>
-                <p class="text-xs text-slate-500 mt-1"><span class="text-blue-600 font-semibold">{{ $stats['active_projects'] }}</span> active delivery projects</p>
+            <div class="mt-3">
+                <div class="text-2xl font-extrabold text-slate-900">{{ number_format($stats['total_projects']) }}</div>
+                <p class="text-[11px] text-slate-500 mt-1"><span class="text-blue-600 font-semibold">{{ $stats['active_projects'] }}</span> active projects</p>
             </div>
         </div>
 
-        <!-- Overdue Projects (Phase 5B) -->
-        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <!-- Quotations (Phase 6A) -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Overdue Projects</span>
-                <div class="w-9 h-9 rounded-lg {{ $stats['overdue_projects'] > 0 ? 'bg-rose-50 text-rose-600' : 'bg-slate-50 text-slate-500' }} flex items-center justify-center font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Quotations</span>
+                <div class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                 </div>
             </div>
-            <div class="mt-4">
-                <div class="text-3xl font-extrabold {{ $stats['overdue_projects'] > 0 ? 'text-rose-600' : 'text-slate-900' }}">{{ number_format($stats['overdue_projects']) }}</div>
-                <p class="text-xs text-slate-500 mt-1"><span class="text-emerald-600 font-semibold">{{ $stats['completed_projects'] }}</span> completed projects</p>
+            <div class="mt-3">
+                <div class="text-2xl font-extrabold text-slate-900">{{ number_format($stats['total_quotations']) }}</div>
+                <p class="text-[11px] text-slate-500 mt-1"><span class="text-emerald-600 font-semibold">{{ $stats['accepted_quotations'] }}</span> accepted proposals</p>
+            </div>
+        </div>
+
+        <!-- Overdue Projects -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Overdue Projects</span>
+                <div class="w-8 h-8 rounded-lg {{ $stats['overdue_projects'] > 0 ? 'bg-rose-50 text-rose-600' : 'bg-slate-50 text-slate-500' }} flex items-center justify-center font-bold">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+            </div>
+            <div class="mt-3">
+                <div class="text-2xl font-extrabold {{ $stats['overdue_projects'] > 0 ? 'text-rose-600' : 'text-slate-900' }}">{{ number_format($stats['overdue_projects']) }}</div>
+                <p class="text-[11px] text-slate-500 mt-1"><span class="text-emerald-600 font-semibold">{{ $stats['completed_projects'] }}</span> completed</p>
             </div>
         </div>
     </div>
@@ -113,60 +127,108 @@
         </div>
     </div>
 
-    <!-- Recent Delivery Projects Section -->
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-        <div class="p-5 border-b border-slate-200 flex items-center justify-between">
-            <div>
-                <h3 class="font-bold text-slate-900">Recent Projects</h3>
-                <p class="text-xs text-slate-500 mt-0.5">Active delivery projects overview</p>
+    <!-- Recent Delivery Projects & Quotations Section (2 Columns) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Recent Delivery Projects -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-slate-900">Recent Projects</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Active delivery projects overview</p>
+                </div>
+                <a href="{{ route('admin.projects.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700">View All &rarr;</a>
             </div>
-            <a href="{{ route('admin.projects.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700">View All Projects &rarr;</a>
-        </div>
-        <div class="overflow-x-auto flex-1">
-            <table class="w-full text-left text-sm text-slate-600">
-                <thead class="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
-                    <tr>
-                        <th class="px-5 py-3">Reference</th>
-                        <th class="px-5 py-3">Project Title</th>
-                        <th class="px-5 py-3">Client</th>
-                        <th class="px-5 py-3">Status</th>
-                        <th class="px-5 py-3">Expected Completion</th>
-                        <th class="px-5 py-3 text-right">Action</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-200 text-xs">
-                    @forelse($recentProjects as $proj)
-                        <tr class="hover:bg-slate-50">
-                            <td class="px-5 py-3 font-mono font-semibold text-blue-600">
-                                {{ $proj->reference_number }}
-                            </td>
-                            <td class="px-5 py-3 font-semibold text-slate-900">
-                                {{ $proj->title }}
-                            </td>
-                            <td class="px-5 py-3">
-                                {{ $proj->client->name ?? 'Unassigned' }}
-                            </td>
-                            <td class="px-5 py-3">
-                                <span class="inline-flex px-2 py-0.5 text-xs font-bold rounded-full border bg-slate-100 text-slate-800 border-slate-200">
-                                    {{ $proj->status->label() }}
-                                </span>
-                            </td>
-                            <td class="px-5 py-3 font-mono text-slate-600">
-                                {{ $proj->expected_completion_date ? $proj->expected_completion_date->format('M d, Y') : 'N/A' }}
-                            </td>
-                            <td class="px-5 py-3 text-right">
-                                <a href="{{ route('admin.projects.show', $proj->id) }}" class="text-xs font-semibold text-blue-600 hover:underline">Workspace</a>
-                            </td>
-                        </tr>
-                    @empty
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
                         <tr>
-                            <td colspan="6" class="px-5 py-8 text-center text-xs text-slate-500">
-                                No projects created yet. <a href="{{ route('admin.projects.create') }}" class="text-blue-600 font-semibold hover:underline">Create a project</a>.
-                            </td>
+                            <th class="px-5 py-3">Reference</th>
+                            <th class="px-5 py-3">Project Title</th>
+                            <th class="px-5 py-3">Status</th>
+                            <th class="px-5 py-3 text-right">Action</th>
                         </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 text-xs">
+                        @forelse($recentProjects as $proj)
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-5 py-3 font-mono font-semibold text-blue-600">
+                                    {{ $proj->reference_number }}
+                                </td>
+                                <td class="px-5 py-3 font-semibold text-slate-900">
+                                    {{ $proj->title }}
+                                </td>
+                                <td class="px-5 py-3">
+                                    <span class="inline-flex px-2 py-0.5 text-xs font-bold rounded-full border bg-slate-100 text-slate-800 border-slate-200">
+                                        {{ $proj->status->label() }}
+                                    </span>
+                                </td>
+                                <td class="px-5 py-3 text-right">
+                                    <a href="{{ route('admin.projects.show', $proj->id) }}" class="text-xs font-semibold text-blue-600 hover:underline">Workspace</a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-5 py-8 text-center text-xs text-slate-500">
+                                    No projects created yet.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Quotations -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-slate-900">Recent Quotations</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Commercial proposals and estimates</p>
+                </div>
+                <a href="{{ route('admin.quotations.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700">View All &rarr;</a>
+            </div>
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                        <tr>
+                            <th class="px-5 py-3">Reference</th>
+                            <th class="px-5 py-3">Client</th>
+                            <th class="px-5 py-3">Total</th>
+                            <th class="px-5 py-3">Status</th>
+                            <th class="px-5 py-3 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 text-xs">
+                        @forelse($recentQuotations as $quo)
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-5 py-3 font-mono font-semibold text-blue-600">
+                                    {{ $quo->reference_number }}
+                                </td>
+                                <td class="px-5 py-3 font-semibold text-slate-900">
+                                    {{ $quo->client->name ?? 'N/A' }}
+                                </td>
+                                <td class="px-5 py-3 font-mono font-bold text-slate-900">
+                                    ₹{{ number_format($quo->total, 2) }}
+                                </td>
+                                <td class="px-5 py-3">
+                                    <span class="inline-flex px-2 py-0.5 text-xs font-bold rounded-full border bg-slate-100 text-slate-800 border-slate-200">
+                                        {{ $quo->status->label() }}
+                                    </span>
+                                </td>
+                                <td class="px-5 py-3 text-right">
+                                    <a href="{{ route('admin.quotations.show', $quo->id) }}" class="text-xs font-semibold text-blue-600 hover:underline">View</a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="px-5 py-8 text-center text-xs text-slate-500">
+                                    No quotations generated yet. <a href="{{ route('admin.quotations.create') }}" class="text-blue-600 font-semibold hover:underline">Create quotation</a>.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

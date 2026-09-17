@@ -19,6 +19,7 @@ class AdminAuthorizationTest extends TestCase
         $this->get(route('admin.leads.index'))->assertRedirect(route('login'));
         $this->get(route('admin.leads.create'))->assertRedirect(route('login'));
         $this->get(route('admin.projects.index'))->assertRedirect(route('login'));
+        $this->get(route('admin.quotations.index'))->assertRedirect(route('login'));
     }
 
     public function test_clients_cannot_access_admin_crm_routes(): void
@@ -46,6 +47,10 @@ class AdminAuthorizationTest extends TestCase
 
         $this->actingAs($client)
             ->get(route('admin.projects.index'))
+            ->assertStatus(403);
+
+        $this->actingAs($client)
+            ->get(route('admin.quotations.index'))
             ->assertStatus(403);
     }
 
@@ -75,6 +80,11 @@ class AdminAuthorizationTest extends TestCase
             ->get(route('admin.projects.index'))
             ->assertStatus(200)
             ->assertSee('Project Directory');
+
+        $this->actingAs($admin)
+            ->get(route('admin.quotations.index'))
+            ->assertStatus(200)
+            ->assertSee('Quotations Directory');
     }
 
     public function test_super_admins_can_access_admin_crm_routes(): void
@@ -98,6 +108,10 @@ class AdminAuthorizationTest extends TestCase
 
         $this->actingAs($superAdmin)
             ->get(route('admin.projects.index'))
+            ->assertStatus(200);
+
+        $this->actingAs($superAdmin)
+            ->get(route('admin.quotations.index'))
             ->assertStatus(200);
     }
 }
