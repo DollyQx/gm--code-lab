@@ -25,6 +25,8 @@ use App\Http\Controllers\Client\ProfileController;
 use App\Http\Controllers\Client\ProjectController as ClientProjectController;
 use App\Http\Controllers\Client\QuotationController as ClientQuotationController;
 use App\Http\Controllers\Client\RazorpayPaymentController as ClientRazorpayPaymentController;
+use App\Http\Controllers\Client\SupportTicketController as ClientSupportTicketController;
+use App\Http\Controllers\Admin\AdminSupportTicketController;
 use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
@@ -114,10 +116,17 @@ Route::middleware(['auth', 'active', 'role:client'])->group(function () {
     Route::get('/client/payments', [ClientPaymentController::class, 'index'])->name('client.payments.index');
     Route::get('/client/payments/{payment}', [ClientPaymentController::class, 'show'])->name('client.payments.show');
     Route::get('/client/payments/{payment}/receipt', [ClientPaymentController::class, 'receipt'])->name('client.payments.receipt');
+
+    // Client Support Tickets (Phase 7C.1)
+    Route::get('/client/tickets', [ClientSupportTicketController::class, 'index'])->name('client.tickets.index');
+    Route::get('/client/tickets/create', [ClientSupportTicketController::class, 'create'])->name('client.tickets.create');
+    Route::post('/client/tickets', [ClientSupportTicketController::class, 'store'])->name('client.tickets.store');
+    Route::get('/client/tickets/{ticket}', [ClientSupportTicketController::class, 'show'])->name('client.tickets.show');
+    Route::post('/client/tickets/{ticket}/reply', [ClientSupportTicketController::class, 'reply'])->name('client.tickets.reply');
 });
 
 // Protected Admin CRM Routes
-Route::middleware(['auth', 'active', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'active', 'role:admin,super_admin,support,project_manager,developer'])->prefix('admin')->name('admin.')->group(function () {
     Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
@@ -185,6 +194,14 @@ Route::middleware(['auth', 'active', 'role:admin,super_admin'])->prefix('admin')
     Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
     Route::get('/payments/{payment}', [AdminPaymentController::class, 'show'])->name('payments.show');
     Route::get('/payments/{payment}/receipt', [AdminPaymentController::class, 'receipt'])->name('payments.receipt');
+
+    // Admin Support Ticket Management (Phase 7C.1)
+    Route::get('/tickets', [AdminSupportTicketController::class, 'index'])->name('tickets.index');
+    Route::get('/tickets/{ticket}', [AdminSupportTicketController::class, 'show'])->name('tickets.show');
+    Route::post('/tickets/{ticket}/reply', [AdminSupportTicketController::class, 'reply'])->name('tickets.reply');
+    Route::post('/tickets/{ticket}/internal-note', [AdminSupportTicketController::class, 'internalNote'])->name('tickets.internal-note');
+    Route::patch('/tickets/{ticket}/status', [AdminSupportTicketController::class, 'updateStatus'])->name('tickets.status');
+    Route::patch('/tickets/{ticket}/assign', [AdminSupportTicketController::class, 'assign'])->name('tickets.assign');
 });
 
 // Public Webhooks (Phase 6C)

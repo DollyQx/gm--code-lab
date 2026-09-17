@@ -93,6 +93,15 @@
                         Payments & Ledger
                     </a>
                 </div>
+
+                <!-- Support -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 px-3">Support</h4>
+                    <a href="{{ route('admin.tickets.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('admin.tickets.*') ? 'bg-blue-600 text-white font-semibold' : 'hover:bg-slate-800 text-slate-300' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Support Tickets
+                    </a>
+                </div>
             </nav>
 
             <!-- Bottom User Profile Footer -->

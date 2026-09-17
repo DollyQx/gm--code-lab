@@ -121,6 +121,22 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Support tickets created by client.
+     */
+    public function supportTickets(): HasMany
+    {
+        return $this->hasMany(SupportTicket::class, 'client_id');
+    }
+
+    /**
+     * Support tickets assigned to staff member.
+     */
+    public function assignedSupportTickets(): HasMany
+    {
+        return $this->hasMany(SupportTicket::class, 'assigned_to_id');
+    }
+
+    /**
      * Check if user has administrative privileges (admin or super_admin).
      */
     public function isAdmin(): bool
@@ -128,6 +144,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role instanceof UserRole
             ? $this->role->isAdminRole()
             : in_array($this->role, [UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value], true);
+    }
+
+    /**
+     * Check if user is support staff or admin.
+     */
+    public function isSupportStaff(): bool
+    {
+        return $this->isAdmin() || $this->hasRole(UserRole::SUPPORT->value);
     }
 
     /**
