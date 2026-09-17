@@ -114,6 +114,11 @@ class RazorpayWebhookController extends Controller
         if (!$payment && $invoiceId) {
             $invoice = Invoice::find($invoiceId);
             if ($invoice) {
+                if ($amountRupees <= 0 || $amountRupees > (float) $invoice->amount_due + 0.01) {
+                    Log::warning("Razorpay Webhook: Payment amount ₹{$amountRupees} exceeds invoice balance due ₹{$invoice->amount_due}.");
+                    return;
+                }
+
                 $payment = Payment::create([
                     'reference_number' => 'GMC-PAY-' . strtoupper(\Illuminate\Support\Str::random(8)),
                     'invoice_id' => $invoice->id,
