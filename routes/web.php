@@ -1,7 +1,64 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\Auth\ClientLoginController;
+use App\Http\Controllers\Auth\ClientRegisterController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
+use App\Http\Controllers\Client\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
+});
+
+// Guest Routes - Client Authentication
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [ClientRegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [ClientRegisterController::class, 'register'])->middleware('throttle:6,1');
+
+    Route::get('/login', [ClientLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [ClientLoginController::class, 'login'])->middleware('throttle:6,1');
+
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email')->middleware('throttle:6,1');
+
+    Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update')->middleware('throttle:6,1');
+});
+
+// Guest Routes - Admin Authentication
+Route::middleware('guest')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AdminLoginController::class, 'login'])->middleware('throttle:6,1');
+});
+
+// Protected Client Routes
+Route::middleware(['auth', 'active', 'role:client'])->group(function () {
+    Route::post('/logout', [ClientLoginController::class, 'logout'])->name('logout');
+
+    // Email Verification Notice & Handlers
+    Route::get('/email/verify', [VerificationController::class, 'show'])->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->middleware('signed')->name('verification.verify');
+    Route::post('/email/verification-notification', [VerificationController::class, 'resend'])->middleware('throttle:6,1')->name('verification.send');
+
+    // Client Dashboard & Profile
+    Route::get('/client/dashboard', [ClientDashboardController::class, 'index'])->name('client.dashboard');
+    Route::get('/client/profile', [ProfileController::class, 'show'])->name('client.profile');
+    Route::put('/client/profile', [ProfileController::class, 'update'])->name('client.profile.update');
+});
+
+// Protected Admin Routes
+Route::middleware(['auth', 'active', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 });
