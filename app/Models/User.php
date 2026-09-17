@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -61,6 +62,62 @@ class User extends Authenticatable implements MustVerifyEmail
     public function clientProfile(): HasOne
     {
         return $this->hasOne(ClientProfile::class, 'user_id');
+    }
+
+    /**
+     * Client projects relationship.
+     */
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class, 'client_id');
+    }
+
+    /**
+     * Client leads relationship.
+     */
+    public function leads(): HasMany
+    {
+        return $this->hasMany(Lead::class, 'client_id');
+    }
+
+    /**
+     * Assigned leads relationship for staff.
+     */
+    public function assignedLeads(): HasMany
+    {
+        return $this->hasMany(Lead::class, 'assigned_user_id');
+    }
+
+    /**
+     * Client quotations relationship.
+     */
+    public function quotations(): HasMany
+    {
+        return $this->hasMany(Quotation::class, 'client_id');
+    }
+
+    /**
+     * Client invoices relationship.
+     */
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'client_id');
+    }
+
+    /**
+     * Client payments relationship.
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'client_id');
+    }
+
+    /**
+     * Client documents relationship.
+     */
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class, 'client_id');
     }
 
     /**
