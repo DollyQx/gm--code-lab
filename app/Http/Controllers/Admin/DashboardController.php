@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\LeadStatus;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Lead;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -11,7 +14,7 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     /**
-     * Display the basic admin dashboard.
+     * Display the comprehensive admin CRM dashboard.
      */
     public function index(Request $request): View
     {
@@ -19,12 +22,30 @@ class DashboardController extends Controller
 
         $stats = [
             'total_clients' => User::where('role', UserRole::CLIENT->value)->count(),
-            'total_admins' => User::whereIn('role', [UserRole::ADMIN->value, UserRole::SUPER_ADMIN->value])->count(),
-            'system_status' => 'Operational',
-            'php_version' => PHP_VERSION,
-            'laravel_version' => app()->version(),
+            'active_clients' => User::where('role', UserRole::CLIENT->value)
+                ->where('status', UserStatus::ACTIVE->value)
+                ->count(),
+            'total_leads' => Lead::count(),
+            'new_leads' => Lead::where('status', LeadStatus::NEW->value)->count(),
+            'contacted_leads' => Lead::where('status', LeadStatus::CONTACTED->value)->count(),
+            'qualified_leads' => Lead::where('status', LeadStatus::QUALIFIED->value)->count(),
+            'quotation_sent_leads' => Lead::where('status', LeadStatus::QUOTATION_SENT->value)->count(),
+            'negotiation_leads' => Lead::where('status', LeadStatus::NEGOTIATION->value)->count(),
+            'won_leads' => Lead::where('status', LeadStatus::WON->value)->count(),
+            'lost_leads' => Lead::where('status', LeadStatus::LOST->value)->count(),
         ];
 
-        return view('admin.dashboard', compact('adminUser', 'stats'));
+        $recentLeads = Lead::with('assignedUser')
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get();
+
+        $recentClients = User::where('role', UserRole::CLIENT->value)
+            ->with('clientProfile')
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get();
+
+        return view('admin.dashboard', compact('adminUser', 'stats', 'recentLeads', 'recentClients'));
     }
 }

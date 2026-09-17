@@ -26,7 +26,7 @@ class RoleAuthorizationTest extends TestCase
         $response = $this->actingAs($superAdmin)->get('/admin/dashboard');
 
         $response->assertStatus(200);
-        $response->assertSee('Admin Control Dashboard');
+        $response->assertSee('CRM Dashboard Overview');
     }
 
     public function test_admin_can_access_admin_dashboard(): void

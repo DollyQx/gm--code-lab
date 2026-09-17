@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\ClientController as AdminClientController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\LeadController as AdminLeadController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\ClientLoginController;
 use App\Http\Controllers\Auth\ClientRegisterController;
@@ -77,8 +79,21 @@ Route::middleware(['auth', 'active', 'role:client'])->group(function () {
     Route::put('/client/profile', [ProfileController::class, 'update'])->name('client.profile.update');
 });
 
-// Protected Admin Routes
+// Protected Admin CRM Routes
 Route::middleware(['auth', 'active', 'role:admin,super_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    // Client Management
+    Route::get('/clients', [AdminClientController::class, 'index'])->name('clients.index');
+    Route::get('/clients/{client}', [AdminClientController::class, 'show'])->name('clients.show');
+
+    // Lead Management
+    Route::get('/leads', [AdminLeadController::class, 'index'])->name('leads.index');
+    Route::get('/leads/create', [AdminLeadController::class, 'create'])->name('leads.create');
+    Route::post('/leads', [AdminLeadController::class, 'store'])->name('leads.store');
+    Route::get('/leads/{lead}', [AdminLeadController::class, 'show'])->name('leads.show');
+    Route::get('/leads/{lead}/edit', [AdminLeadController::class, 'edit'])->name('leads.edit');
+    Route::put('/leads/{lead}', [AdminLeadController::class, 'update'])->name('leads.update');
+    Route::patch('/leads/{lead}/status', [AdminLeadController::class, 'updateStatus'])->name('leads.status');
 });
