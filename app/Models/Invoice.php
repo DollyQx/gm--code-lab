@@ -81,4 +81,42 @@ class Invoice extends Model
     {
         return $this->hasMany(Payment::class, 'invoice_id');
     }
+
+    /**
+     * Recalculate invoice financial totals, amount paid, amount due, and update status.
+     */
+    public function recalculateTotals(): void
+    {
+        $subtotal = (float) $this->subtotal;
+        $discount = (float) $this->discount;
+        $tax = (float) $this->tax;
+
+        $total = max(0, $subtotal - $discount + $tax);
+
+        $amountPaid = (float) $this->payments()
+            ->where('status', \App\Enums\PaymentStatus::PAID)
+            ->sum('amount');
+
+        $amountDue = max(0, $total - $amountPaid);
+
+        $status = $this->status;
+        if (!in_array($this->status, [InvoiceStatus::DRAFT, InvoiceStatus::CANCELLED])) {
+            if ($amountDue == 0 && $total > 0) {
+                $status = InvoiceStatus::PAID;
+            } elseif ($amountPaid > 0 && $amountDue > 0) {
+                $status = InvoiceStatus::PARTIALLY_PAID;
+            } elseif ($amountPaid == 0 && $this->due_date && $this->due_date->isPast() && $status !== InvoiceStatus::DRAFT) {
+                $status = InvoiceStatus::OVERDUE;
+            } else {
+                $status = InvoiceStatus::ISSUED;
+            }
+        }
+
+        $this->update([
+            'total' => $total,
+            'amount_paid' => $amountPaid,
+            'amount_due' => $amountDue,
+            'status' => $status,
+        ]);
+    }
 }

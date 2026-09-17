@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\InvoiceStatus;
 use App\Enums\LeadStatus;
 use App\Enums\ProjectStatus;
 use App\Enums\QuotationStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Invoice;
 use App\Models\Lead;
 use App\Models\Project;
 use App\Models\Quotation;
@@ -63,6 +65,14 @@ class DashboardController extends Controller
             'sent_quotations' => Quotation::where('status', QuotationStatus::SENT->value)->count(),
             'accepted_quotations' => Quotation::where('status', QuotationStatus::ACCEPTED->value)->count(),
             'expired_quotations' => Quotation::where('status', QuotationStatus::EXPIRED->value)->count(),
+
+            // Invoice Metrics (Phase 6B)
+            'total_invoices' => Invoice::count(),
+            'draft_invoices' => Invoice::where('status', InvoiceStatus::DRAFT->value)->count(),
+            'issued_invoices' => Invoice::where('status', InvoiceStatus::ISSUED->value)->count(),
+            'paid_invoices' => Invoice::where('status', InvoiceStatus::PAID->value)->count(),
+            'partially_paid_invoices' => Invoice::where('status', InvoiceStatus::PARTIALLY_PAID->value)->count(),
+            'overdue_invoices' => Invoice::where('status', InvoiceStatus::OVERDUE->value)->count(),
         ];
 
         $recentLeads = Lead::with('assignedUser')
@@ -86,13 +96,19 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $recentInvoices = Invoice::with(['client', 'project', 'quotation'])
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get();
+
         return view('admin.dashboard', compact(
             'adminUser',
             'stats',
             'recentLeads',
             'recentClients',
             'recentProjects',
-            'recentQuotations'
+            'recentQuotations',
+            'recentInvoices'
         ));
     }
 }

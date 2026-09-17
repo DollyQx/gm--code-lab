@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProjectRequirementController as AdminProjectRequi
 use App\Http\Controllers\Admin\ProjectMilestoneController as AdminProjectMilestoneController;
 use App\Http\Controllers\Admin\ProjectTaskController as AdminProjectTaskController;
 use App\Http\Controllers\Admin\QuotationController as AdminQuotationController;
+use App\Http\Controllers\Admin\InvoiceController as AdminInvoiceController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\ClientLoginController;
 use App\Http\Controllers\Auth\ClientRegisterController;
@@ -134,5 +135,14 @@ Route::middleware(['auth', 'active', 'role:admin,super_admin'])->prefix('admin')
     Route::get('/quotations/{quotation}/edit', [AdminQuotationController::class, 'edit'])->name('quotations.edit');
     Route::put('/quotations/{quotation}', [AdminQuotationController::class, 'update'])->name('quotations.update');
     Route::patch('/quotations/{quotation}/status', [AdminQuotationController::class, 'updateStatus'])->name('quotations.status');
-});
 
+    // Invoice Management (Phase 6B)
+    Route::get('/invoices', [AdminInvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('/invoices/create', [AdminInvoiceController::class, 'create'])->name('invoices.create');
+    Route::post('/invoices', [AdminInvoiceController::class, 'store'])->name('invoices.store');
+    Route::get('/invoices/{invoice}', [AdminInvoiceController::class, 'show'])->name('invoices.show');
+    Route::get('/invoices/{invoice}/edit', [AdminInvoiceController::class, 'edit'])->name('invoices.edit');
+    Route::put('/invoices/{invoice}', [AdminInvoiceController::class, 'update'])->name('invoices.update');
+    Route::patch('/invoices/{invoice}/status', [AdminInvoiceController::class, 'updateStatus'])->name('invoices.status');
+    Route::post('/invoices/{invoice}/payments', [AdminInvoiceController::class, 'storePayment'])->name('invoices.payments.store');
+});

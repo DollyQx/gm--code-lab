@@ -84,13 +84,10 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                         Quotations
                     </a>
-                    <span class="flex items-center justify-between px-3 py-2 rounded-lg text-slate-500 cursor-not-allowed">
-                        <span class="flex items-center gap-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            Invoices & Payments
-                        </span>
-                        <span class="text-[10px] bg-slate-800 px-1.5 py-0.5 rounded text-slate-400">Soon</span>
-                    </span>
+                    <a href="{{ route('admin.invoices.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('admin.invoices.*') ? 'bg-blue-600 text-white font-semibold' : 'hover:bg-slate-800 text-slate-300' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Invoices & Payments
+                    </a>
                 </div>
             </nav>
 
@@ -147,6 +144,7 @@
                 <a href="{{ route('admin.clients.index') }}" class="block px-3 py-2 rounded-md font-medium text-sm text-slate-200 hover:bg-slate-800">Clients Directory</a>
                 <a href="{{ route('admin.projects.index') }}" class="block px-3 py-2 rounded-md font-medium text-sm text-slate-200 hover:bg-slate-800">Projects Directory</a>
                 <a href="{{ route('admin.quotations.index') }}" class="block px-3 py-2 rounded-md font-medium text-sm text-slate-200 hover:bg-slate-800">Quotations Directory</a>
+                <a href="{{ route('admin.invoices.index') }}" class="block px-3 py-2 rounded-md font-medium text-sm text-slate-200 hover:bg-slate-800">Invoices & Payments</a>
                 <form action="{{ route('admin.logout') }}" method="POST" class="pt-2 border-t border-slate-800">
                     @csrf
                     <button type="submit" class="w-full text-left px-3 py-2 text-sm text-red-400 font-semibold hover:bg-slate-800 rounded-md">Logout</button>

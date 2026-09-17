@@ -208,7 +208,7 @@
                                     {{ $quo->client->name ?? 'N/A' }}
                                 </td>
                                 <td class="px-5 py-3 font-mono font-bold text-slate-900">
-                                    ₹{{ number_format($quo->total, 2) }}
+                                    ₹{{ number_format((float)$quo->total, 2) }}
                                 </td>
                                 <td class="px-5 py-3">
                                     <span class="inline-flex px-2 py-0.5 text-xs font-bold rounded-full border bg-slate-100 text-slate-800 border-slate-200">
@@ -223,6 +223,63 @@
                             <tr>
                                 <td colspan="5" class="px-5 py-8 text-center text-xs text-slate-500">
                                     No quotations generated yet. <a href="{{ route('admin.quotations.create') }}" class="text-blue-600 font-semibold hover:underline">Create quotation</a>.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Invoices (Phase 6B) -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col lg:col-span-2">
+            <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                    <h3 class="font-bold text-slate-900">Recent Invoices</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Commercial invoices and payment collection status</p>
+                </div>
+                <a href="{{ route('admin.invoices.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700">View All &rarr;</a>
+            </div>
+            <div class="overflow-x-auto flex-1">
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                        <tr>
+                            <th class="px-5 py-3">Invoice #</th>
+                            <th class="px-5 py-3">Client</th>
+                            <th class="px-5 py-3">Total</th>
+                            <th class="px-5 py-3">Amount Due</th>
+                            <th class="px-5 py-3">Status</th>
+                            <th class="px-5 py-3 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 text-xs">
+                        @forelse($recentInvoices as $inv)
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-5 py-3 font-mono font-semibold text-blue-600">
+                                    {{ $inv->reference_number }}
+                                </td>
+                                <td class="px-5 py-3 font-semibold text-slate-900">
+                                    {{ $inv->client->name ?? 'N/A' }}
+                                </td>
+                                <td class="px-5 py-3 font-mono font-bold text-slate-900">
+                                    ₹{{ number_format((float)$inv->total, 2) }}
+                                </td>
+                                <td class="px-5 py-3 font-mono font-bold text-amber-600">
+                                    ₹{{ number_format((float)$inv->amount_due, 2) }}
+                                </td>
+                                <td class="px-5 py-3">
+                                    <span class="inline-flex px-2 py-0.5 text-xs font-bold rounded-full {{ $inv->status->badgeClass() }}">
+                                        {{ $inv->status->label() }}
+                                    </span>
+                                </td>
+                                <td class="px-5 py-3 text-right">
+                                    <a href="{{ route('admin.invoices.show', $inv->id) }}" class="text-xs font-semibold text-blue-600 hover:underline">Workspace</a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-5 py-8 text-center text-xs text-slate-500">
+                                    No invoices issued yet. <a href="{{ route('admin.invoices.create') }}" class="text-blue-600 font-semibold hover:underline">Create invoice</a>.
                                 </td>
                             </tr>
                         @endforelse
