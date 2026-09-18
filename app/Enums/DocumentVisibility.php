@@ -16,4 +16,14 @@ enum DocumentVisibility: string
             self::PUBLIC => 'Publicly Accessible',
         };
     }
+
+    public function isClientVisible(): bool
+    {
+        return $this === self::CLIENT;
+    }
+
+    public function isInternal(): bool
+    {
+        return $this === self::PRIVATE;
+    }
 }

@@ -77,6 +77,9 @@
                         <a href="{{ route('client.change-requests.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-colors {{ request()->routeIs('client.change-requests.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             Change Requests
                         </a>
+                        <a href="{{ route('client.documents.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-colors {{ request()->routeIs('client.documents.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                            Documents
+                        </a>
                         <a href="{{ route('client.profile') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-colors {{ request()->routeIs('client.profile') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
                             My Profile
                         </a>
@@ -124,6 +127,7 @@
             <a href="{{ route('client.payments.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.payments.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Payments</a>
             <a href="{{ route('client.tickets.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.tickets.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Support Tickets</a>
             <a href="{{ route('client.change-requests.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.change-requests.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Change Requests</a>
+            <a href="{{ route('client.documents.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.documents.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Documents</a>
             <a href="{{ route('client.profile') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.profile') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">My Profile</a>
             <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
                 <div>

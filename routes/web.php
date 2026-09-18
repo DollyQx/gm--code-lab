@@ -29,6 +29,8 @@ use App\Http\Controllers\Client\SupportTicketController as ClientSupportTicketCo
 use App\Http\Controllers\Admin\AdminSupportTicketController;
 use App\Http\Controllers\Client\ChangeRequestController as ClientChangeRequestController;
 use App\Http\Controllers\Admin\AdminChangeRequestController;
+use App\Http\Controllers\Admin\AdminDocumentController;
+use App\Http\Controllers\Client\ClientDocumentController;
 use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
@@ -132,6 +134,11 @@ Route::middleware(['auth', 'active', 'role:client'])->group(function () {
     Route::post('/client/change-requests', [ClientChangeRequestController::class, 'store'])->name('client.change-requests.store');
     Route::get('/client/change-requests/{changeRequest}', [ClientChangeRequestController::class, 'show'])->name('client.change-requests.show');
     Route::post('/client/change-requests/{changeRequest}/cancel', [ClientChangeRequestController::class, 'cancel'])->name('client.change-requests.cancel');
+
+    // Client Documents (Phase 7C.3)
+    Route::get('/client/documents', [ClientDocumentController::class, 'index'])->name('client.documents.index');
+    Route::get('/client/documents/{document}', [ClientDocumentController::class, 'show'])->name('client.documents.show');
+    Route::get('/client/documents/{document}/download', [ClientDocumentController::class, 'download'])->name('client.documents.download');
 });
 
 // Protected Admin CRM Routes
@@ -218,6 +225,15 @@ Route::middleware(['auth', 'active', 'role:admin,super_admin,support,project_man
     Route::put('/change-requests/{changeRequest}/review', [AdminChangeRequestController::class, 'updateReview'])->name('change-requests.review');
     Route::patch('/change-requests/{changeRequest}/approve', [AdminChangeRequestController::class, 'approve'])->name('change-requests.approve');
     Route::patch('/change-requests/{changeRequest}/reject', [AdminChangeRequestController::class, 'reject'])->name('change-requests.reject');
+
+    // Admin Document Management (Phase 7C.3)
+    Route::get('/documents', [AdminDocumentController::class, 'index'])->name('documents.index');
+    Route::get('/documents/create', [AdminDocumentController::class, 'create'])->name('documents.create');
+    Route::post('/documents', [AdminDocumentController::class, 'store'])->name('documents.store');
+    Route::get('/documents/{document}', [AdminDocumentController::class, 'show'])->name('documents.show');
+    Route::get('/documents/{document}/download', [AdminDocumentController::class, 'download'])->name('documents.download');
+    Route::patch('/documents/{document}/visibility', [AdminDocumentController::class, 'updateVisibility'])->name('documents.visibility');
+    Route::delete('/documents/{document}', [AdminDocumentController::class, 'destroy'])->name('documents.destroy');
 });
 
 // Public Webhooks (Phase 6C)
