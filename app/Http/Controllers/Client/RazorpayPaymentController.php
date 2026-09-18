@@ -145,6 +145,27 @@ class RazorpayPaymentController extends Controller
 
             $invoice->recalculateTotals();
 
+            // Notifications
+            if ($invoice->client) {
+                \App\Services\NotificationService::notifyUser(
+                    $invoice->client,
+                    'payment',
+                    "Payment Successful: ₹" . number_format((float) $payment->amount, 2),
+                    "Your online payment of ₹" . number_format((float) $payment->amount, 2) . " for Invoice {$invoice->reference_number} has been verified.",
+                    route('client.invoices.show', $invoice->id),
+                    $payment
+                );
+            }
+
+            \App\Services\NotificationService::notifyRoles(
+                [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SUPER_ADMIN, \App\Enums\UserRole::FINANCE],
+                'payment',
+                "Online Payment Received: ₹" . number_format((float) $payment->amount, 2),
+                "Client " . ($invoice->client->name ?? 'Client') . " paid ₹" . number_format((float) $payment->amount, 2) . " online for Invoice {$invoice->reference_number}.",
+                route('admin.invoices.show', $invoice->id),
+                $payment
+            );
+
             ActivityLogger::log(
                 action: 'payment.created',
                 subject: $invoice,

@@ -87,9 +87,19 @@
                 </div>
 
                 <!-- Right Side Actions & User Profile -->
-                <div class="hidden md:flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-3">
+                    <!-- Notification Bell -->
+                    <a href="{{ route('client.notifications.index') }}" class="relative p-2 text-slate-600 hover:text-slate-900 rounded-lg border border-slate-200 bg-slate-50 hover:bg-white transition-colors block" title="Notifications">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                        @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
+                            <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-blue-600 text-white text-[10px] font-extrabold flex items-center justify-center shadow-sm">
+                                {{ auth()->user()->unreadNotifications->count() > 9 ? '9+' : auth()->user()->unreadNotifications->count() }}
+                            </span>
+                        @endif
+                    </a>
+
                     <!-- Client Account Info -->
-                    <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                    <div class="flex items-center gap-3 pl-3 border-l border-slate-200">
                         <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-sm border border-blue-200">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
@@ -128,6 +138,7 @@
             <a href="{{ route('client.tickets.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.tickets.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Support Tickets</a>
             <a href="{{ route('client.change-requests.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.change-requests.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Change Requests</a>
             <a href="{{ route('client.documents.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.documents.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Documents</a>
+            <a href="{{ route('client.notifications.index') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.notifications.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">Notifications</a>
             <a href="{{ route('client.profile') }}" class="block px-3 py-2 text-sm font-semibold rounded-lg {{ request()->routeIs('client.profile') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">My Profile</a>
             <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
                 <div>

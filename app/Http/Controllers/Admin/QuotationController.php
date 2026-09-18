@@ -264,6 +264,17 @@ class QuotationController extends Controller
         if ($oldStatus !== $newStatus) {
             $quotation->update(['status' => $newStatus]);
 
+            if ($newStatus === QuotationStatus::SENT && $quotation->client) {
+                \App\Services\NotificationService::notifyUser(
+                    $quotation->client,
+                    'quotation',
+                    "New Quotation Issued: {$quotation->reference_number}",
+                    "A new quotation for ₹" . number_format((float) $quotation->total, 2) . " has been issued for your review.",
+                    route('client.quotations.show', $quotation->id),
+                    $quotation
+                );
+            }
+
             ActivityLogger::log(
                 action: 'quotation.status_updated',
                 subject: $quotation,

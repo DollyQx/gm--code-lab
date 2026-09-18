@@ -178,6 +178,17 @@ class AdminDocumentController extends Controller
             ]
         );
 
+        if ($document->visibility->value === DocumentVisibility::CLIENT->value && $document->client) {
+            \App\Services\NotificationService::notifyUser(
+                $document->client,
+                'document',
+                "New Document Shared: {$document->original_filename}",
+                "A new document ({$document->original_filename}) has been shared with your account.",
+                route('client.documents.show', $document->id),
+                $document
+            );
+        }
+
         return redirect()
             ->route('admin.documents.show', $document)
             ->with('success', "Document {$document->reference_number} uploaded successfully.");
@@ -251,6 +262,17 @@ class AdminDocumentController extends Controller
                 'new_visibility' => $newVisibility,
             ]
         );
+
+        if ($newVisibility === DocumentVisibility::CLIENT->value && $oldVisibility !== DocumentVisibility::CLIENT->value && $document->client) {
+            \App\Services\NotificationService::notifyUser(
+                $document->client,
+                'document',
+                "New Document Shared: {$document->original_filename}",
+                "A document ({$document->original_filename}) has been made available to your account.",
+                route('client.documents.show', $document->id),
+                $document
+            );
+        }
 
         return back()->with('success', 'Document visibility updated successfully.');
     }

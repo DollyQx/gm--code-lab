@@ -144,6 +144,17 @@ class AdminSupportTicketController extends Controller
 
         ActivityLogger::log('ticket.replied', $ticket, "Staff replied to ticket {$ticket->reference_number}.");
 
+        if ($ticket->client) {
+            \App\Services\NotificationService::notifyUser(
+                $ticket->client,
+                'support_ticket',
+                "Support Ticket Reply: #{$ticket->reference_number}",
+                "Staff replied to your support ticket: {$ticket->subject}",
+                route('client.tickets.show', $ticket->id),
+                $ticket
+            );
+        }
+
         return back()->with('status', 'Response sent to client successfully.');
     }
 
@@ -207,6 +218,17 @@ class AdminSupportTicketController extends Controller
 
         ActivityLogger::log($action, $ticket, "Ticket {$ticket->reference_number} status updated to " . ucfirst(str_replace('_', ' ', $newStatus)));
 
+        if ($ticket->client) {
+            \App\Services\NotificationService::notifyUser(
+                $ticket->client,
+                'support_ticket',
+                "Ticket Status Updated: #{$ticket->reference_number}",
+                "Your ticket status has been updated to " . ucfirst(str_replace('_', ' ', $newStatus)) . ".",
+                route('client.tickets.show', $ticket->id),
+                $ticket
+            );
+        }
+
         return back()->with('status', 'Ticket status updated to ' . ucfirst(str_replace('_', ' ', $newStatus)) . '.');
     }
 
@@ -228,6 +250,17 @@ class AdminSupportTicketController extends Controller
         $assigneeName = $ticket->assignedTo ? $ticket->assignedTo->name : 'Unassigned';
 
         ActivityLogger::log('ticket.assigned', $ticket, "Ticket {$ticket->reference_number} assigned to {$assigneeName}.");
+
+        if ($ticket->assignedTo) {
+            \App\Services\NotificationService::notifyUser(
+                $ticket->assignedTo,
+                'support_ticket',
+                "Support Ticket Assigned: #{$ticket->reference_number}",
+                "Support ticket #{$ticket->reference_number} has been assigned to you.",
+                route('admin.tickets.show', $ticket->id),
+                $ticket
+            );
+        }
 
         return back()->with('status', "Ticket assigned to {$assigneeName}.");
     }

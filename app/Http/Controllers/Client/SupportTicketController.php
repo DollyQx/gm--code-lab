@@ -121,6 +121,15 @@ class SupportTicketController extends Controller
 
         ActivityLogger::log('ticket.created', $ticket, "Support ticket {$ticket->reference_number} submitted.");
 
+        \App\Services\NotificationService::notifyRoles(
+            [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SUPER_ADMIN, \App\Enums\UserRole::SUPPORT],
+            'support_ticket',
+            "New Support Ticket #{$ticket->reference_number}",
+            "Client {$user->name} submitted ticket: {$ticket->subject}",
+            route('admin.tickets.show', $ticket->id),
+            $ticket
+        );
+
         return redirect()->route('client.tickets.show', $ticket->id)
             ->with('status', 'Support ticket submitted successfully! Reference: ' . $ticket->reference_number);
     }
@@ -169,6 +178,15 @@ class SupportTicketController extends Controller
         }
 
         ActivityLogger::log('ticket.replied', $ticket, "Client replied to support ticket {$ticket->reference_number}.");
+
+        \App\Services\NotificationService::notifyRoles(
+            [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SUPER_ADMIN, \App\Enums\UserRole::SUPPORT],
+            'support_ticket',
+            "Client Reply on Ticket #{$ticket->reference_number}",
+            "Client {$user->name} replied to support ticket {$ticket->reference_number}.",
+            route('admin.tickets.show', $ticket->id),
+            $ticket
+        );
 
         return redirect()->route('client.tickets.show', $ticket->id)
             ->with('status', 'Reply posted successfully.');

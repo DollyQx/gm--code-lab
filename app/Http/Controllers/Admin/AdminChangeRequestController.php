@@ -115,6 +115,17 @@ class AdminChangeRequestController extends Controller
             "Updated review & scope assessment for change request '{$changeRequest->reference_number}'"
         );
 
+        if ($changeRequest->client) {
+            \App\Services\NotificationService::notifyUser(
+                $changeRequest->client,
+                'change_request',
+                "Change Request Under Review: {$changeRequest->reference_number}",
+                "Your change request #{$changeRequest->reference_number} is now under review.",
+                route('client.change-requests.show', $changeRequest->id),
+                $changeRequest
+            );
+        }
+
         return back()->with('status', "Scope & cost assessment updated for {$changeRequest->reference_number}.");
     }
 
@@ -142,6 +153,17 @@ class AdminChangeRequestController extends Controller
             "Approved change request '{$changeRequest->reference_number}'"
         );
 
+        if ($changeRequest->client) {
+            \App\Services\NotificationService::notifyUser(
+                $changeRequest->client,
+                'change_request',
+                "Change Request Approved: {$changeRequest->reference_number}",
+                "Your change request #{$changeRequest->reference_number} has been approved.",
+                route('client.change-requests.show', $changeRequest->id),
+                $changeRequest
+            );
+        }
+
         return back()->with('status', "Change request {$changeRequest->reference_number} has been APPROVED.");
     }
 
@@ -168,6 +190,17 @@ class AdminChangeRequestController extends Controller
             $changeRequest,
             "Rejected change request '{$changeRequest->reference_number}'"
         );
+
+        if ($changeRequest->client) {
+            \App\Services\NotificationService::notifyUser(
+                $changeRequest->client,
+                'change_request',
+                "Change Request Rejected: {$changeRequest->reference_number}",
+                "Your change request #{$changeRequest->reference_number} was rejected.",
+                route('client.change-requests.show', $changeRequest->id),
+                $changeRequest
+            );
+        }
 
         return back()->with('status', "Change request {$changeRequest->reference_number} has been REJECTED.");
     }

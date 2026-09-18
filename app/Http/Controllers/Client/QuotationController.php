@@ -66,7 +66,7 @@ class QuotationController extends Controller
     /**
      * Accept a quotation (Server-side transition).
      */
-    public function accept(Quotation $quotation): RedirectResponse
+    public function accept(Request $request, Quotation $quotation): RedirectResponse
     {
         Gate::authorize('accept', $quotation);
 
@@ -82,6 +82,25 @@ class QuotationController extends Controller
         $quotation->update([
             'status' => QuotationStatus::ACCEPTED,
         ]);
+
+        // Notifications
+        \App\Services\NotificationService::notifyUser(
+            auth()->user(),
+            'quotation',
+            "Quotation Accepted: {$quotation->reference_number}",
+            "You accepted quotation #{$quotation->reference_number} for ₹" . number_format((float) $quotation->total, 2) . ".",
+            route('client.quotations.show', $quotation->id),
+            $quotation
+        );
+
+        \App\Services\NotificationService::notifyRoles(
+            [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SUPER_ADMIN, \App\Enums\UserRole::PROJECT_MANAGER],
+            'quotation',
+            "Quotation Accepted by Client: {$quotation->reference_number}",
+            "Client " . (auth()->user()->name ?? 'Client') . " accepted quotation #{$quotation->reference_number} for ₹" . number_format((float) $quotation->total, 2) . ".",
+            route('admin.quotations.show', $quotation->id),
+            $quotation
+        );
 
         ActivityLogger::log(
             action: 'quotation.accepted',
@@ -99,7 +118,7 @@ class QuotationController extends Controller
     /**
      * Reject a quotation (Server-side transition).
      */
-    public function reject(Quotation $quotation): RedirectResponse
+    public function reject(Request $request, Quotation $quotation): RedirectResponse
     {
         Gate::authorize('reject', $quotation);
 
@@ -115,6 +134,25 @@ class QuotationController extends Controller
         $quotation->update([
             'status' => QuotationStatus::REJECTED,
         ]);
+
+        // Notifications
+        \App\Services\NotificationService::notifyUser(
+            auth()->user(),
+            'quotation',
+            "Quotation Rejected: {$quotation->reference_number}",
+            "You rejected quotation #{$quotation->reference_number}.",
+            route('client.quotations.show', $quotation->id),
+            $quotation
+        );
+
+        \App\Services\NotificationService::notifyRoles(
+            [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SUPER_ADMIN, \App\Enums\UserRole::PROJECT_MANAGER],
+            'quotation',
+            "Quotation Rejected by Client: {$quotation->reference_number}",
+            "Client " . (auth()->user()->name ?? 'Client') . " rejected quotation #{$quotation->reference_number}.",
+            route('admin.quotations.show', $quotation->id),
+            $quotation
+        );
 
         ActivityLogger::log(
             action: 'quotation.rejected',

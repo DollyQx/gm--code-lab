@@ -104,10 +104,21 @@
 
                 <!-- Support -->
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 px-3">Support</h4>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 px-3">Support & System</h4>
                     <a href="{{ route('admin.tickets.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('admin.tickets.*') ? 'bg-blue-600 text-white font-semibold' : 'hover:bg-slate-800 text-slate-300' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Support Tickets
+                    </a>
+                    <a href="{{ route('admin.notifications.index') }}" class="flex items-center justify-between px-3 py-2 rounded-lg transition-colors mt-1 {{ request()->routeIs('admin.notifications.*') ? 'bg-blue-600 text-white font-semibold' : 'hover:bg-slate-800 text-slate-300' }}">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            Notifications
+                        </div>
+                        @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-500 text-white">
+                                {{ auth()->user()->unreadNotifications->count() }}
+                            </span>
+                        @endif
                     </a>
                 </div>
             </nav>
@@ -150,7 +161,16 @@
                 </div>
 
                 <!-- Right Header Actions -->
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('admin.notifications.index') }}" class="relative p-2 text-slate-600 hover:text-slate-900 rounded-lg border border-slate-200 bg-slate-50 hover:bg-white transition-colors block" title="Notifications">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                        @if(auth()->check() && auth()->user()->unreadNotifications->count() > 0)
+                            <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-blue-600 text-white text-[10px] font-extrabold flex items-center justify-center shadow-sm">
+                                {{ auth()->user()->unreadNotifications->count() > 9 ? '9+' : auth()->user()->unreadNotifications->count() }}
+                            </span>
+                        @endif
+                    </a>
+
                     <a href="{{ route('home') }}" target="_blank" class="text-xs font-semibold text-slate-600 hover:text-blue-600 flex items-center gap-1.5 border border-slate-200 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-white">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                         Public Site

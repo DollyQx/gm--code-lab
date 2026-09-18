@@ -147,6 +147,17 @@ class InvoiceController extends Controller
             'notes' => $validated['notes'] ?? null,
         ]);
 
+        if ($invoice->client) {
+            \App\Services\NotificationService::notifyUser(
+                $invoice->client,
+                'invoice',
+                "New Invoice Issued: {$invoice->reference_number}",
+                "Invoice {$invoice->reference_number} for ₹" . number_format((float) $total, 2) . " has been issued.",
+                route('client.invoices.show', $invoice->id),
+                $invoice
+            );
+        }
+
         ActivityLogger::log(
             action: 'invoice.created',
             subject: $invoice,
@@ -268,6 +279,17 @@ class InvoiceController extends Controller
 
         $invoice->recalculateTotals();
 
+        if ($oldStatus !== $newStatus && $invoice->client) {
+            \App\Services\NotificationService::notifyUser(
+                $invoice->client,
+                'invoice',
+                "Invoice Status Updated: {$invoice->reference_number}",
+                "Invoice {$invoice->reference_number} status updated to " . InvoiceStatus::from($newStatus)->label() . ".",
+                route('client.invoices.show', $invoice->id),
+                $invoice
+            );
+        }
+
         ActivityLogger::log(
             action: 'invoice.status_updated',
             subject: $invoice,
@@ -305,6 +327,26 @@ class InvoiceController extends Controller
         ]);
 
         $invoice->recalculateTotals();
+
+        if ($invoice->client) {
+            \App\Services\NotificationService::notifyUser(
+                $invoice->client,
+                'payment',
+                "Payment Received: ₹" . number_format((float) $payment->amount, 2),
+                "Payment of ₹" . number_format((float) $payment->amount, 2) . " has been received for Invoice {$invoice->reference_number}.",
+                route('client.invoices.show', $invoice->id),
+                $payment
+            );
+        }
+
+        \App\Services\NotificationService::notifyRoles(
+            [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SUPER_ADMIN, \App\Enums\UserRole::FINANCE],
+            'payment',
+            "Payment Recorded: ₹" . number_format((float) $payment->amount, 2),
+            "Payment recorded for Invoice {$invoice->reference_number} (Client: " . ($invoice->client->name ?? 'Client') . ").",
+            route('admin.invoices.show', $invoice->id),
+            $payment
+        );
 
         ActivityLogger::log(
             action: 'payment.created',

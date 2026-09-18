@@ -107,6 +107,15 @@ class ChangeRequestController extends Controller
             "Submitted change request '{$changeRequest->title}' ({$changeRequest->reference_number}) for project '{$project->title}'"
         );
 
+        \App\Services\NotificationService::notifyRoles(
+            [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SUPER_ADMIN, \App\Enums\UserRole::PROJECT_MANAGER],
+            'change_request',
+            "New Change Request: {$changeRequest->reference_number}",
+            "Client " . (auth()->user()->name ?? 'Client') . " submitted change request: {$changeRequest->title}",
+            route('admin.change-requests.show', $changeRequest->id),
+            $changeRequest
+        );
+
         return redirect()->route('client.change-requests.show', $changeRequest->id)
             ->with('status', "Change request {$changeRequest->reference_number} submitted successfully.");
     }
@@ -144,6 +153,15 @@ class ChangeRequestController extends Controller
             'change_request.cancelled',
             $changeRequest,
             "Client cancelled change request '{$changeRequest->reference_number}'"
+        );
+
+        \App\Services\NotificationService::notifyRoles(
+            [\App\Enums\UserRole::ADMIN, \App\Enums\UserRole::SUPER_ADMIN, \App\Enums\UserRole::PROJECT_MANAGER],
+            'change_request',
+            "Change Request Cancelled: {$changeRequest->reference_number}",
+            "Client " . (auth()->user()->name ?? 'Client') . " cancelled change request {$changeRequest->reference_number}.",
+            route('admin.change-requests.show', $changeRequest->id),
+            $changeRequest
         );
 
         return back()->with('status', "Change request {$changeRequest->reference_number} was cancelled.");

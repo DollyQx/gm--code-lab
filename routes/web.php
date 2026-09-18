@@ -31,6 +31,8 @@ use App\Http\Controllers\Client\ChangeRequestController as ClientChangeRequestCo
 use App\Http\Controllers\Admin\AdminChangeRequestController;
 use App\Http\Controllers\Admin\AdminDocumentController;
 use App\Http\Controllers\Client\ClientDocumentController;
+use App\Http\Controllers\Admin\AdminNotificationController;
+use App\Http\Controllers\Client\ClientNotificationController;
 use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
@@ -139,6 +141,12 @@ Route::middleware(['auth', 'active', 'role:client'])->group(function () {
     Route::get('/client/documents', [ClientDocumentController::class, 'index'])->name('client.documents.index');
     Route::get('/client/documents/{document}', [ClientDocumentController::class, 'show'])->name('client.documents.show');
     Route::get('/client/documents/{document}/download', [ClientDocumentController::class, 'download'])->name('client.documents.download');
+
+    // Client Notifications (Phase 7C.4)
+    Route::get('/client/notifications', [ClientNotificationController::class, 'index'])->name('client.notifications.index');
+    Route::post('/client/notifications/{id}/mark-read', [ClientNotificationController::class, 'markAsRead'])->name('client.notifications.mark-read');
+    Route::post('/client/notifications/{id}/mark-unread', [ClientNotificationController::class, 'markAsUnread'])->name('client.notifications.mark-unread');
+    Route::post('/client/notifications/mark-all-read', [ClientNotificationController::class, 'markAllAsRead'])->name('client.notifications.mark-all-read');
 });
 
 // Protected Admin CRM Routes
@@ -234,6 +242,12 @@ Route::middleware(['auth', 'active', 'role:admin,super_admin,support,project_man
     Route::get('/documents/{document}/download', [AdminDocumentController::class, 'download'])->name('documents.download');
     Route::patch('/documents/{document}/visibility', [AdminDocumentController::class, 'updateVisibility'])->name('documents.visibility');
     Route::delete('/documents/{document}', [AdminDocumentController::class, 'destroy'])->name('documents.destroy');
+
+    // Admin Notifications (Phase 7C.4)
+    Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/mark-read', [AdminNotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+    Route::post('/notifications/{id}/mark-unread', [AdminNotificationController::class, 'markAsUnread'])->name('notifications.mark-unread');
+    Route::post('/notifications/mark-all-read', [AdminNotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
 });
 
 // Public Webhooks (Phase 6C)
