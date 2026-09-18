@@ -64,7 +64,11 @@
                         <span class="font-bold">{{ $project->actual_completion_date->format('M d, Y') }}</span>
                     </div>
                 @endif
-                <div class="border-t border-slate-200/60 pt-2 text-center">
+                <div class="border-t border-slate-200/60 pt-2 space-y-2">
+                    <a href="{{ route('client.projects.messages', $project->id) }}" class="inline-flex items-center justify-center gap-1.5 w-full px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        Project Messages
+                    </a>
                     <a href="{{ route('client.projects.activity', $project->id) }}" class="inline-flex items-center justify-center gap-1.5 w-full px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold border border-indigo-200 text-xs transition-colors">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         View Activity Timeline

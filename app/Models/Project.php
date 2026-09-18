@@ -102,4 +102,14 @@ class Project extends Model
     {
         return $this->hasMany(Document::class, 'project_id');
     }
+
+    public function conversation(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(ProjectConversation::class, 'project_id');
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(ProjectMessage::class, 'project_id');
+    }
 }

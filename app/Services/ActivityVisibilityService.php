@@ -64,6 +64,9 @@ class ActivityVisibilityService
         'change_request.cancelled',
         'document_uploaded',
         'document_visibility_changed',
+        'project.message_sent',
+        'project.message_attachment_uploaded',
+        'project.message_attachment_downloaded',
     ];
 
     /**
@@ -151,6 +154,9 @@ class ActivityVisibilityService
             'document_visibility_changed' => 'Document Visibility Updated',
             'document_downloaded' => 'Document Downloaded',
             'document_deleted' => 'Document Removed',
+            'project.message_sent' => 'Project Message Sent',
+            'project.message_attachment_uploaded' => 'Message Attachment Uploaded',
+            'project.message_attachment_downloaded' => 'Message Attachment Downloaded',
             default => ucfirst(str_replace(['.', '_'], ' ', $action)),
         };
     }

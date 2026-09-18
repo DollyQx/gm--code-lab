@@ -16,6 +16,7 @@ class NotificationService
         'support_ticket',
         'change_request',
         'document',
+        'project_message',
         'system',
     ];
 

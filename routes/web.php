@@ -34,7 +34,9 @@ use App\Http\Controllers\Client\ClientDocumentController;
 use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Client\ClientNotificationController;
 use App\Http\Controllers\Admin\AdminActivityController;
+use App\Http\Controllers\Admin\AdminProjectMessageController;
 use App\Http\Controllers\Client\ClientActivityController;
+use App\Http\Controllers\Client\ClientProjectMessageController;
 use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
@@ -153,6 +155,11 @@ Route::middleware(['auth', 'active', 'role:client'])->group(function () {
     // Client Activity & Project Timelines (Phase 7C.5)
     Route::get('/client/activity', [ClientActivityController::class, 'index'])->name('client.activity.index');
     Route::get('/client/projects/{project}/activity', [ClientActivityController::class, 'projectTimeline'])->name('client.projects.activity');
+
+    // Client Project Messages (Phase 7C.6)
+    Route::get('/client/projects/{project}/messages', [ClientProjectMessageController::class, 'index'])->name('client.projects.messages');
+    Route::post('/client/projects/{project}/messages', [ClientProjectMessageController::class, 'store'])->name('client.projects.messages.store');
+    Route::get('/client/projects/{project}/messages/{message}/download', [ClientProjectMessageController::class, 'downloadAttachment'])->name('client.projects.messages.download');
 });
 
 // Protected Admin CRM Routes
@@ -258,6 +265,11 @@ Route::middleware(['auth', 'active', 'role:admin,super_admin,support,project_man
     // Admin Activity & Audit Directory (Phase 7C.5)
     Route::get('/activity', [AdminActivityController::class, 'index'])->name('activity.index');
     Route::get('/activity/{activityLog}', [AdminActivityController::class, 'show'])->name('activity.show');
+
+    // Admin Project Messages (Phase 7C.6)
+    Route::get('/projects/{project}/messages', [AdminProjectMessageController::class, 'index'])->name('projects.messages');
+    Route::post('/projects/{project}/messages', [AdminProjectMessageController::class, 'store'])->name('projects.messages.store');
+    Route::get('/projects/{project}/messages/{message}/download', [AdminProjectMessageController::class, 'downloadAttachment'])->name('projects.messages.download');
 });
 
 // Public Webhooks (Phase 6C)
