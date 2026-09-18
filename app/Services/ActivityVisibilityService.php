@@ -67,6 +67,10 @@ class ActivityVisibilityService
         'project.message_sent',
         'project.message_attachment_uploaded',
         'project.message_attachment_downloaded',
+        'project.review_requested',
+        'project.feedback_submitted',
+        'project.client_approved',
+        'project.final_delivery_recorded',
     ];
 
     /**
@@ -157,6 +161,10 @@ class ActivityVisibilityService
             'project.message_sent' => 'Project Message Sent',
             'project.message_attachment_uploaded' => 'Message Attachment Uploaded',
             'project.message_attachment_downloaded' => 'Message Attachment Downloaded',
+            'project.review_requested' => 'Client Review Requested',
+            'project.feedback_submitted' => 'Client Review Feedback Submitted',
+            'project.client_approved' => 'Project Final Approval & Acceptance',
+            'project.final_delivery_recorded' => 'Project Final Delivery Recorded',
             default => ucfirst(str_replace(['.', '_'], ' ', $action)),
         };
     }

@@ -35,8 +35,10 @@ use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Client\ClientNotificationController;
 use App\Http\Controllers\Admin\AdminActivityController;
 use App\Http\Controllers\Admin\AdminProjectMessageController;
+use App\Http\Controllers\Admin\AdminProjectReviewController;
 use App\Http\Controllers\Client\ClientActivityController;
 use App\Http\Controllers\Client\ClientProjectMessageController;
+use App\Http\Controllers\Client\ClientProjectReviewController;
 use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
@@ -160,6 +162,11 @@ Route::middleware(['auth', 'active', 'role:client'])->group(function () {
     Route::get('/client/projects/{project}/messages', [ClientProjectMessageController::class, 'index'])->name('client.projects.messages');
     Route::post('/client/projects/{project}/messages', [ClientProjectMessageController::class, 'store'])->name('client.projects.messages.store');
     Route::get('/client/projects/{project}/messages/{message}/download', [ClientProjectMessageController::class, 'downloadAttachment'])->name('client.projects.messages.download');
+
+    // Client Project Review & Sign-Off (Phase 7C.7)
+    Route::get('/client/projects/{project}/review', [ClientProjectReviewController::class, 'show'])->name('client.projects.review');
+    Route::post('/client/projects/{project}/review/feedback', [ClientProjectReviewController::class, 'submitFeedback'])->name('client.projects.review.feedback');
+    Route::post('/client/projects/{project}/review/approve', [ClientProjectReviewController::class, 'approveSignOff'])->name('client.projects.review.approve');
 });
 
 // Protected Admin CRM Routes
@@ -270,6 +277,11 @@ Route::middleware(['auth', 'active', 'role:admin,super_admin,support,project_man
     Route::get('/projects/{project}/messages', [AdminProjectMessageController::class, 'index'])->name('projects.messages');
     Route::post('/projects/{project}/messages', [AdminProjectMessageController::class, 'store'])->name('projects.messages.store');
     Route::get('/projects/{project}/messages/{message}/download', [AdminProjectMessageController::class, 'downloadAttachment'])->name('projects.messages.download');
+
+    // Admin Project Review & Sign-Off (Phase 7C.7)
+    Route::get('/projects/{project}/review', [AdminProjectReviewController::class, 'show'])->name('projects.review');
+    Route::post('/projects/{project}/review/request', [AdminProjectReviewController::class, 'requestReview'])->name('projects.review.request');
+    Route::post('/projects/{project}/review/deliver', [AdminProjectReviewController::class, 'markFinalDelivery'])->name('projects.review.deliver');
 });
 
 // Public Webhooks (Phase 6C)

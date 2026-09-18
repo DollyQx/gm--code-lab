@@ -112,4 +112,14 @@ class Project extends Model
     {
         return $this->hasMany(ProjectMessage::class, 'project_id');
     }
+
+    public function signOff(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(ProjectSignOff::class, 'project_id');
+    }
+
+    public function reviewIterations(): HasMany
+    {
+        return $this->hasMany(ProjectReviewIteration::class, 'project_id')->orderBy('iteration_number', 'desc');
+    }
 }
