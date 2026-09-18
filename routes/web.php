@@ -33,6 +33,8 @@ use App\Http\Controllers\Admin\AdminDocumentController;
 use App\Http\Controllers\Client\ClientDocumentController;
 use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Client\ClientNotificationController;
+use App\Http\Controllers\Admin\AdminActivityController;
+use App\Http\Controllers\Client\ClientActivityController;
 use App\Http\Controllers\Public\AboutController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
@@ -147,6 +149,10 @@ Route::middleware(['auth', 'active', 'role:client'])->group(function () {
     Route::post('/client/notifications/{id}/mark-read', [ClientNotificationController::class, 'markAsRead'])->name('client.notifications.mark-read');
     Route::post('/client/notifications/{id}/mark-unread', [ClientNotificationController::class, 'markAsUnread'])->name('client.notifications.mark-unread');
     Route::post('/client/notifications/mark-all-read', [ClientNotificationController::class, 'markAllAsRead'])->name('client.notifications.mark-all-read');
+
+    // Client Activity & Project Timelines (Phase 7C.5)
+    Route::get('/client/activity', [ClientActivityController::class, 'index'])->name('client.activity.index');
+    Route::get('/client/projects/{project}/activity', [ClientActivityController::class, 'projectTimeline'])->name('client.projects.activity');
 });
 
 // Protected Admin CRM Routes
@@ -248,6 +254,10 @@ Route::middleware(['auth', 'active', 'role:admin,super_admin,support,project_man
     Route::post('/notifications/{id}/mark-read', [AdminNotificationController::class, 'markAsRead'])->name('notifications.mark-read');
     Route::post('/notifications/{id}/mark-unread', [AdminNotificationController::class, 'markAsUnread'])->name('notifications.mark-unread');
     Route::post('/notifications/mark-all-read', [AdminNotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+
+    // Admin Activity & Audit Directory (Phase 7C.5)
+    Route::get('/activity', [AdminActivityController::class, 'index'])->name('activity.index');
+    Route::get('/activity/{activityLog}', [AdminActivityController::class, 'show'])->name('activity.show');
 });
 
 // Public Webhooks (Phase 6C)

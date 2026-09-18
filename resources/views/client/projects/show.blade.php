@@ -48,8 +48,8 @@
                 </div>
             </div>
 
-            <!-- Schedule Dates Card -->
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/80 text-xs space-y-1.5 min-w-[240px]">
+            <!-- Schedule Dates & Activity Timeline Card -->
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/80 text-xs space-y-2 min-w-[240px]">
                 <div class="flex justify-between">
                     <span class="text-slate-500 font-semibold uppercase tracking-wider">Start Date:</span>
                     <span class="font-bold text-slate-900">{{ $project->start_date ? $project->start_date->format('M d, Y') : 'TBD' }}</span>
@@ -64,6 +64,12 @@
                         <span class="font-bold">{{ $project->actual_completion_date->format('M d, Y') }}</span>
                     </div>
                 @endif
+                <div class="border-t border-slate-200/60 pt-2 text-center">
+                    <a href="{{ route('client.projects.activity', $project->id) }}" class="inline-flex items-center justify-center gap-1.5 w-full px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold border border-indigo-200 text-xs transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        View Activity Timeline
+                    </a>
+                </div>
             </div>
         </div>
 
